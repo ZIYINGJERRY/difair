@@ -1,0 +1,2973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title data-i18n="doc_title">DIFAIR Studio</title>
+<style>
+  :root{
+    --paper:#EEF1E9;
+    --paper-card:#FBFBF6;
+    --stripe:#E2EAE0;
+    --ink:#17241D;
+    --ink-soft:#4B584E;
+    --ink-faint:#8A9086;
+    --rule:#C9CBB6;
+    --rule-strong:#9DA48C;
+    --a-ok:#2F6B4F;
+    --a-ok-bg:#DEEBE2;
+    --a-warn:#B8842E;
+    --a-warn-bg:#F3E7CE;
+    --a-flag:#A83A2E;
+    --a-flag-bg:#F3DCD7;
+    --a-info:#3B5D8C;
+    --a-info-bg:#E1E8F2;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, "Liberation Mono", monospace;
+    --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--font-sans);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{ background:var(--a-ok); color:#fff; }
+  a{color:var(--a-ok);}
+
+  .wrap{ max-width:1040px; margin:0 auto; padding:0 22px 90px; }
+
+  /* ---------- hero ---------- */
+  .topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:20px 0 0;
+  }
+  .brand{ font-family:var(--font-mono); font-weight:700; font-size:15px; letter-spacing:.02em; }
+
+  .hero{ padding:28px 0 30px; border-bottom:1px solid var(--rule); margin-bottom:30px; }
+  .hero-eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--ink-faint); margin:0 0 14px;
+  }
+  .hero h1{
+    font-family:var(--font-mono); font-weight:700; font-size:clamp(26px,4.6vw,40px);
+    letter-spacing:-0.01em; margin:0 0 14px; color:var(--ink);
+  }
+  .hero p{ max-width:70ch; font-size:16px; color:var(--ink-soft); margin:0 0 8px; }
+  .privacy-note{
+    display:inline-flex; align-items:center; gap:8px; margin-top:16px;
+    font-family:var(--font-mono); font-size:12.5px; color:var(--a-ok);
+    background:var(--a-ok-bg); border:1px solid var(--a-ok); padding:6px 12px;
+  }
+  .privacy-note::before{ content:""; width:7px;height:7px; background:var(--a-ok); border-radius:50%; flex:none; }
+  .greenbar{
+    height:10px; margin-top:26px;
+    background-image: repeating-linear-gradient(90deg, var(--stripe) 0px, var(--stripe) 22px, transparent 22px, transparent 44px);
+    border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); opacity:.9;
+  }
+
+  /* ---------- tab nav ---------- */
+  .tabnav{
+    display:flex; flex-wrap:wrap; gap:2px; margin-bottom:30px;
+    border-bottom:1px solid var(--rule-strong);
+  }
+  .tabnav button{
+    font-family:var(--font-mono); font-size:13px; padding:11px 16px;
+    background:transparent; border:none; border-bottom:2px solid transparent;
+    color:var(--ink-soft); cursor:pointer; letter-spacing:.01em;
+  }
+  .tabnav button:hover{ color:var(--ink); background:var(--stripe); }
+  .tabnav button.active{ color:var(--ink); border-bottom-color:var(--a-ok); font-weight:700; }
+  .tabnav button:focus-visible{ outline:2px solid var(--a-ok); outline-offset:-2px; }
+
+  .tabpanel{ display:none; }
+  .tabpanel.active{ display:block; }
+
+  /* ---------- sections ---------- */
+  section.step{ margin:0 0 36px; }
+  .step-head{ display:flex; align-items:baseline; gap:14px; margin-bottom:14px; }
+  .step-num{
+    font-family:var(--font-mono); font-size:13px; color:var(--paper); background:var(--ink);
+    padding:2px 8px; letter-spacing:.05em;
+  }
+  .step-title{ font-family:var(--font-mono); font-weight:700; font-size:17px; margin:0; }
+  .step-sub{ font-size:14px; color:var(--ink-soft); margin:6px 0 16px 44px; max-width:66ch; }
+  .step-body{ margin-left:44px; }
+  @media (max-width:600px){ .step-sub, .step-body{ margin-left:0; } }
+
+  .card{ background:var(--paper-card); border:1px solid var(--rule); padding:20px; }
+  .intro-card{
+    background:var(--paper-card); border:1px solid var(--rule); padding:16px 18px;
+    margin-bottom:26px; font-size:14px; color:var(--ink-soft);
+  }
+  .intro-card b{ color:var(--ink); }
+
+  /* ---------- buttons & controls ---------- */
+  .btn{
+    font-family:var(--font-mono); font-size:13px; letter-spacing:.02em; padding:9px 14px;
+    border:1px solid var(--ink); background:transparent; color:var(--ink); cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px; transition:background .15s ease, color .15s ease;
+  }
+  .btn:hover{ background:var(--ink); color:var(--paper); }
+  .btn:focus-visible{ outline:2px solid var(--a-ok); outline-offset:2px; }
+  .btn-primary{ background:var(--ink); color:var(--paper); }
+  .btn-primary:hover{ background:var(--a-ok); border-color:var(--a-ok); }
+  .btn:disabled{ opacity:.4; cursor:not-allowed; background:transparent; color:var(--ink); }
+  .btn-row{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; }
+
+  .dropzone{
+    border:1.5px dashed var(--rule-strong); padding:28px 20px; text-align:center;
+    color:var(--ink-soft); font-size:13.5px; cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .dropzone:hover, .dropzone.drag{ border-color:var(--a-ok); background:var(--a-ok-bg); }
+  .dropzone strong{ color:var(--ink); }
+  .dropzone input[type=file]{ display:none; }
+  .file-status{ margin-top:12px; font-family:var(--font-mono); font-size:12.5px; }
+
+  label.field-label{
+    display:block; font-family:var(--font-mono); font-size:12px; text-transform:uppercase;
+    letter-spacing:.06em; color:var(--ink-soft); margin-bottom:6px;
+  }
+  select, input[type=number], input[type=text], .select-like{
+    font-family:var(--font-sans); font-size:14px; padding:8px 10px;
+    border:1px solid var(--rule-strong); background:#fff; color:var(--ink); min-width:200px;
+  }
+  select:focus-visible, input:focus-visible{ outline:2px solid var(--a-ok); outline-offset:1px; }
+
+  .config-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px 22px; margin-bottom:16px; }
+  @media (max-width:560px){ .config-grid{ grid-template-columns:1fr; } }
+
+  .checkbox-row{ display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--ink-soft); margin-bottom:12px; }
+  .checkbox-row input{ margin-top:3px; }
+  .checkbox-row strong{ color:var(--ink); }
+  .checkbox-group{ display:flex; flex-wrap:wrap; gap:8px 22px; margin-bottom:16px; }
+  .checkbox-group label{ display:flex; align-items:center; gap:6px; font-size:13.5px; color:var(--ink-soft); }
+  .checkbox-group label strong{ color:var(--ink); font-weight:600; }
+
+  .detected-box{
+    font-family:var(--font-mono); font-size:12.5px; background:var(--paper); border:1px solid var(--rule);
+    padding:11px 14px; margin-bottom:16px; color:var(--ink-soft);
+  }
+  .detected-box b{ color:var(--ink); }
+
+  .error-box{
+    font-family:var(--font-sans); font-size:13.5px; background:var(--a-flag-bg); border:1px solid var(--a-flag);
+    color:#5A1E17; padding:13px 15px; margin-bottom:16px;
+  }
+  .error-box .err-title{
+    font-family:var(--font-mono); font-weight:700; text-transform:uppercase; font-size:11.5px;
+    letter-spacing:.06em; margin-bottom:4px; display:block;
+  }
+  .warn-box{
+    font-family:var(--font-sans); font-size:13px; background:var(--a-warn-bg); border:1px solid var(--a-warn);
+    color:#4E3A12; padding:9px 13px; margin-bottom:16px;
+  }
+  .info-box{
+    font-family:var(--font-sans); font-size:13px; background:var(--a-info-bg); border:1px solid var(--a-info);
+    color:#1F3454; padding:9px 13px; margin-bottom:16px;
+  }
+
+  /* ---------- results ---------- */
+  .summary-line{ font-family:var(--font-mono); font-size:14.5px; margin-bottom:14px; }
+  .summary-line .flagged-count{ color:var(--a-flag); font-weight:700; }
+
+  .table-scroll{ overflow-x:auto; border:1px solid var(--rule-strong); margin-bottom:6px; }
+  table.results{ border-collapse:collapse; width:100%; min-width:640px; font-family:var(--font-mono); font-size:12.5px; }
+  table.results thead th{
+    text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.05em;
+    background:var(--ink); color:var(--paper); padding:9px 11px; position:sticky; top:0; white-space:nowrap;
+  }
+  table.results tbody tr:nth-child(odd){ background:#fff; }
+  table.results tbody tr:nth-child(even){ background:var(--stripe); }
+  table.results tbody tr.is-flagged{ background:var(--a-flag-bg); }
+  table.results td{ padding:8px 11px; border-bottom:1px solid var(--rule); white-space:nowrap; }
+  table.results td.item-name{ font-weight:700; }
+  .num{ text-align:right; font-variant-numeric:tabular-nums; }
+
+  .pill{ display:inline-flex; align-items:center; gap:5px; font-family:var(--font-mono); font-size:11.5px; padding:2px 7px; border:1px solid transparent; }
+  .pill-A{ background:var(--a-ok-bg); color:var(--a-ok); border-color:var(--a-ok); }
+  .pill-B{ background:var(--a-warn-bg); color:var(--a-warn); border-color:var(--a-warn); }
+  .pill-C{ background:var(--a-flag-bg); color:var(--a-flag); border-color:var(--a-flag); }
+  .pill-U{ background:var(--paper); color:var(--ink-faint); border-color:var(--rule); }
+  .pill-negligible{ background:var(--a-ok-bg); color:var(--a-ok); border-color:var(--a-ok); }
+  .pill-moderate{ background:var(--a-warn-bg); color:var(--a-warn); border-color:var(--a-warn); }
+  .pill-large{ background:var(--a-flag-bg); color:var(--a-flag); border-color:var(--a-flag); }
+
+  .result-actions{ display:flex; flex-wrap:wrap; gap:10px; margin-top:16px; }
+
+  .kv-grid{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-bottom:18px; }
+  .kv-card{ background:var(--paper-card); border:1px solid var(--rule); padding:12px 14px; }
+  .kv-card .kv-label{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--ink-faint); letter-spacing:.05em; }
+  .kv-card .kv-value{ font-family:var(--font-mono); font-size:20px; font-weight:700; margin-top:4px; }
+
+  /* ---------- footer ---------- */
+  footer{ margin-top:50px; padding-top:24px; border-top:1px solid var(--rule); font-size:13px; color:var(--ink-soft); }
+  footer h3{
+    font-family:var(--font-mono); font-size:13px; text-transform:uppercase; letter-spacing:.06em;
+    color:var(--ink); margin:22px 0 10px;
+  }
+  footer h3:first-child{ margin-top:0; }
+  footer ul{ margin:0 0 6px; padding-left:18px; }
+  footer li{ margin-bottom:6px; }
+
+  .hidden{ display:none !important; }
+  .reveal{ animation: revealIn .35s ease both; }
+  @keyframes revealIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
+  @media (prefers-reduced-motion: reduce){ .reveal{ animation:none; } .btn, .dropzone{ transition:none; } }
+  .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">DIFAIR STUDIO</div>
+  </div>
+
+  <div class="hero">
+    <p class="hero-eyebrow" data-i18n="hero_eyebrow">DIF &amp; Algorithmic Fairness Audit Suite</p>
+    <h1 data-i18n="hero_title">DIFAIR Studio</h1>
+    <p data-i18n="hero_p1">A full browser implementation of the DIFair statistical toolkit: item-level DIF for dichotomous and polytomous items, model-level fairness metrics, survey design-based inference, and Shapley pipeline attribution.</p>
+    <p data-i18n="hero_p2">No installation needed. Upload data in the template format for each tool below.</p>
+    <div class="privacy-note" data-i18n="privacy_note">Runs entirely in your browser &middot; your data is never uploaded to any server</div>
+    <div class="greenbar" aria-hidden="true"></div>
+  </div>
+
+  <nav class="tabnav" id="tabNav">
+    <button type="button" class="tab-btn active" data-tab="tab-dich" data-i18n="tab_dich">Dichotomous DIF</button>
+    <button type="button" class="tab-btn" data-tab="tab-poly" data-i18n="tab_poly">Polytomous DIF</button>
+    <button type="button" class="tab-btn" data-tab="tab-fair" data-i18n="tab_fair">Fairness Metrics</button>
+    <button type="button" class="tab-btn" data-tab="tab-survey" data-i18n="tab_survey">Survey Design</button>
+    <button type="button" class="tab-btn" data-tab="tab-pipeline" data-i18n="tab_pipeline">Pipeline Attribution</button>
+  </nav>
+
+  <!-- ============ TAB PANELS (filled in below) ============ -->
+  <div id="tab-dich" class="tabpanel active">
+    <div class="intro-card" data-i18n="d_intro">Dichotomous (right/wrong) item DIF. Runs Mantel&#8211;Haenszel, standardization, Breslow&#8211;Day, and Swaminathan&#8211;Rogers logistic regression, matching <code>difair.dif</code>.</div>
+
+    <section class="step">
+      <div class="step-head"><span class="step-num">01</span><h2 class="step-title" data-i18n="step_prepare">Prepare your data</h2></div>
+      <p class="step-sub" data-i18n="d_prepare_sub">One column of group labels, plus one column per item (1 = correct, 0 = incorrect).</p>
+      <div class="step-body">
+        <div class="btn-row">
+          <button class="btn" id="d_btnTemplate" type="button" data-i18n="btn_template">&darr; Download data template (CSV)</button>
+          <button class="btn" id="d_btnDemo" type="button" data-i18n="btn_demo">&#9655; Load sample data</button>
+        </div>
+        <label class="dropzone" id="d_dropzone" for="d_fileInput">
+          <div><strong data-i18n="dz_click">Click to choose a file</strong><span data-i18n="dz_drag">, or drag a CSV here</span></div>
+          <div style="margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);" data-i18n="d_dz_hint">.csv &middot; needs a group column + one or more 0/1 item columns</div>
+          <input type="file" id="d_fileInput" accept=".csv,text/csv">
+        </label>
+        <div class="file-status" id="d_fileStatus"></div>
+        <div id="d_parseError"></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="d_step2">
+      <div class="step-head"><span class="step-num">02</span><h2 class="step-title" data-i18n="step_configure">Configure the analysis</h2></div>
+      <p class="step-sub" data-i18n="focal_sub">Choose the group you want to focus on (the focal group). DIF statistics are directional, so the tool won't guess for you.</p>
+      <div class="step-body">
+        <div class="detected-box" id="d_detectedBox"></div>
+        <div class="config-grid">
+          <div>
+            <label class="field-label" data-i18n="lbl_focal">Focal group</label>
+            <select id="d_focalSelect"><option value="" data-i18n="opt_select">Select&hellip;</option></select>
+          </div>
+          <div>
+            <label class="field-label" data-i18n="lbl_matching">Matching criterion</label>
+            <div class="select-like" style="color:var(--ink-soft);" data-i18n="lbl_matching_val">Total score (sum of item responses)</div>
+          </div>
+        </div>
+        <label class="field-label" data-i18n="d_lbl_methods">Methods to run</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="d_m_mh" checked> <strong>Mantel&#8211;Haenszel</strong></label>
+          <label><input type="checkbox" id="d_m_std" checked> <strong data-i18n="d_m_std_lbl">Standardization</strong></label>
+          <label><input type="checkbox" id="d_m_bd" checked> <strong>Breslow&#8211;Day</strong></label>
+          <label><input type="checkbox" id="d_m_log" checked> <strong data-i18n="d_m_log_lbl">Logistic regression</strong></label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="d_purifyCheck" checked>
+          <label for="d_purifyCheck"><strong data-i18n="purify_lbl">Enable purification</strong> <span data-i18n="purify_desc">&mdash; iteratively removes flagged items from the matching score so DIF items don't contaminate the matching criterion, for up to 5 passes until the flagged set stabilizes.</span></label>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" id="d_btnRun" type="button" disabled data-i18n="d_btnRun">&#9654; Run DIF detection</button></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="d_step3">
+      <div class="step-head"><span class="step-num">03</span><h2 class="step-title" data-i18n="step_results">Results</h2></div>
+      <div class="step-body">
+        <div class="summary-line" id="d_summaryLine"></div>
+        <div class="table-scroll"><table class="results">
+          <thead><tr id="d_theadRow"></tr></thead>
+          <tbody id="d_resultsBody"></tbody>
+        </table></div>
+        <div class="result-actions"><button class="btn" id="d_btnDownloadResults" type="button" data-i18n="btn_download_results">&darr; Download results (CSV)</button></div>
+      </div>
+    </section>
+  </div>
+  <div id="tab-poly" class="tabpanel">
+    <div class="intro-card" data-i18n="p_intro">Rating-scale / partial-credit items with 3 or more ordered categories. Runs generalized Mantel&#8211;Haenszel and proportional-odds ordinal logistic regression, matching <code>difair.poly</code>.</div>
+
+    <section class="step">
+      <div class="step-head"><span class="step-num">01</span><h2 class="step-title" data-i18n="step_prepare">Prepare your data</h2></div>
+      <p class="step-sub" data-i18n="p_prepare_sub">One column of group labels, plus one column per item holding ordered integer category codes (e.g. 0&#8211;3 for a 4-point scale).</p>
+      <div class="step-body">
+        <div class="btn-row">
+          <button class="btn" id="p_btnTemplate" type="button" data-i18n="btn_template">&darr; Download data template (CSV)</button>
+          <button class="btn" id="p_btnDemo" type="button" data-i18n="btn_demo">&#9655; Load sample data</button>
+        </div>
+        <label class="dropzone" id="p_dropzone" for="p_fileInput">
+          <div><strong data-i18n="dz_click">Click to choose a file</strong><span data-i18n="dz_drag">, or drag a CSV here</span></div>
+          <div style="margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);" data-i18n="p_dz_hint">.csv &middot; needs a group column + one or more ordered-category item columns</div>
+          <input type="file" id="p_fileInput" accept=".csv,text/csv">
+        </label>
+        <div class="file-status" id="p_fileStatus"></div>
+        <div id="p_parseError"></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="p_step2">
+      <div class="step-head"><span class="step-num">02</span><h2 class="step-title" data-i18n="step_configure">Configure the analysis</h2></div>
+      <p class="step-sub" data-i18n="focal_sub">Choose the group you want to focus on (the focal group). DIF statistics are directional, so the tool won't guess for you.</p>
+      <div class="step-body">
+        <div class="detected-box" id="p_detectedBox"></div>
+        <div class="config-grid">
+          <div>
+            <label class="field-label" data-i18n="lbl_focal">Focal group</label>
+            <select id="p_focalSelect"><option value="" data-i18n="opt_select">Select&hellip;</option></select>
+          </div>
+          <div>
+            <label class="field-label" data-i18n="lbl_matching">Matching criterion</label>
+            <div class="select-like" style="color:var(--ink-soft);" data-i18n="lbl_matching_val">Total score (sum of item responses)</div>
+          </div>
+        </div>
+        <label class="field-label" data-i18n="d_lbl_methods">Methods to run</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="p_m_gmh" checked> <strong data-i18n="p_m_gmh_lbl">Generalized Mantel&#8211;Haenszel</strong></label>
+          <label><input type="checkbox" id="p_m_ord" checked> <strong data-i18n="p_m_ord_lbl">Ordinal logistic regression</strong></label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="p_purifyCheck" checked>
+          <label for="p_purifyCheck"><strong data-i18n="purify_lbl">Enable purification</strong> <span data-i18n="p_purify_desc">&mdash; iteratively removes items flagged by the generalized Mantel&#8211;Haenszel SMD (class B/C) from the matching score, for up to 5 passes.</span></label>
+        </div>
+        <div class="info-box" id="p_slowWarn" data-i18n="p_slow_note">Ordinal logistic regression fits a small nonlinear model per item and can take a few seconds for larger files.</div>
+        <div class="btn-row"><button class="btn btn-primary" id="p_btnRun" type="button" disabled data-i18n="p_btnRun">&#9654; Run DIF detection</button></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="p_step3">
+      <div class="step-head"><span class="step-num">03</span><h2 class="step-title" data-i18n="step_results">Results</h2></div>
+      <div class="step-body">
+        <div class="summary-line" id="p_summaryLine"></div>
+        <div class="table-scroll"><table class="results">
+          <thead><tr id="p_theadRow"></tr></thead>
+          <tbody id="p_resultsBody"></tbody>
+        </table></div>
+        <div class="result-actions"><button class="btn" id="p_btnDownloadResults" type="button" data-i18n="btn_download_results">&darr; Download results (CSV)</button></div>
+      </div>
+    </section>
+  </div>
+  <div id="tab-fair" class="tabpanel">
+    <div class="intro-card" data-i18n="f_intro">Model-level fairness metrics on a downstream decision: demographic parity, equalized odds, equal opportunity, predictive parity, calibration gap, and ordinal disparity, matching <code>difair.fairness</code>.</div>
+
+    <section class="step">
+      <div class="step-head"><span class="step-num">01</span><h2 class="step-title" data-i18n="step_prepare">Prepare your data</h2></div>
+      <p class="step-sub" data-i18n="f_prepare_sub">One row per person: a group column, a binary decision (y_pred), and optionally the true outcome (y_true), a predicted probability (y_score), and/or an ordinal outcome.</p>
+      <div class="step-body">
+        <div class="btn-row">
+          <button class="btn" id="f_btnTemplate" type="button" data-i18n="btn_template">&darr; Download data template (CSV)</button>
+          <button class="btn" id="f_btnDemo" type="button" data-i18n="btn_demo">&#9655; Load sample data</button>
+        </div>
+        <label class="dropzone" id="f_dropzone" for="f_fileInput">
+          <div><strong data-i18n="dz_click">Click to choose a file</strong><span data-i18n="dz_drag">, or drag a CSV here</span></div>
+          <div style="margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);" data-i18n="f_dz_hint">.csv &middot; needs group + y_pred; y_true, y_score, ordinal_outcome are optional</div>
+          <input type="file" id="f_fileInput" accept=".csv,text/csv">
+        </label>
+        <div class="file-status" id="f_fileStatus"></div>
+        <div id="f_parseError"></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="f_step2">
+      <div class="step-head"><span class="step-num">02</span><h2 class="step-title" data-i18n="step_configure">Configure the analysis</h2></div>
+      <p class="step-sub" data-i18n="focal_sub">Choose the group you want to focus on (the focal group). DIF statistics are directional, so the tool won't guess for you.</p>
+      <div class="step-body">
+        <div class="detected-box" id="f_detectedBox"></div>
+        <div class="config-grid">
+          <div>
+            <label class="field-label" data-i18n="lbl_focal">Focal group</label>
+            <select id="f_focalSelect"><option value="" data-i18n="opt_select">Select&hellip;</option></select>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" id="f_btnRun" type="button" disabled data-i18n="f_btnRun">&#9654; Run fairness metrics</button></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="f_step3">
+      <div class="step-head"><span class="step-num">03</span><h2 class="step-title" data-i18n="step_results">Results</h2></div>
+      <div class="step-body">
+        <div class="table-scroll"><table class="results">
+          <thead><tr>
+            <th data-i18n="f_th_metric">Metric</th><th data-i18n="f_th_value">Value</th><th data-i18n="f_th_detail">Detail</th>
+          </tr></thead>
+          <tbody id="f_resultsBody"></tbody>
+        </table></div>
+        <div id="f_ordinalBlock" class="hidden" style="margin-top:22px;">
+          <h3 style="font-family:var(--font-mono);font-size:14px;margin-bottom:10px;" data-i18n="f_ordinal_title">Ordinal disparity</h3>
+          <div class="kv-grid" id="f_ordinalKV"></div>
+        </div>
+        <div class="result-actions"><button class="btn" id="f_btnDownloadResults" type="button" data-i18n="btn_download_results">&darr; Download results (CSV)</button></div>
+      </div>
+    </section>
+  </div>
+  <div id="tab-survey" class="tabpanel">
+    <div class="intro-card" data-i18n="s_intro">Design-based inference for large-scale, clustered assessments: paired-jackknife replicate weights built from your sampling design, and pooling of independent estimates, matching <code>difair.survey</code>.</div>
+
+    <section class="step">
+      <div class="step-head"><span class="step-num">01</span><h2 class="step-title" data-i18n="s_step_prepare">Prepare your design-weighted data</h2></div>
+      <p class="step-sub" data-i18n="s_prepare_sub">Group + dichotomous item columns, plus a sampling weight, a stratum ID and a primary sampling unit (PSU, e.g. school) ID per respondent.</p>
+      <div class="step-body">
+        <div class="btn-row">
+          <button class="btn" id="s_btnTemplate" type="button" data-i18n="btn_template">&darr; Download data template (CSV)</button>
+          <button class="btn" id="s_btnDemo" type="button" data-i18n="btn_demo">&#9655; Load sample data</button>
+        </div>
+        <label class="dropzone" id="s_dropzone" for="s_fileInput">
+          <div><strong data-i18n="dz_click">Click to choose a file</strong><span data-i18n="dz_drag">, or drag a CSV here</span></div>
+          <div style="margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);" data-i18n="s_dz_hint">.csv &middot; needs group, weight, stratum, psu + 0/1 item columns</div>
+          <input type="file" id="s_fileInput" accept=".csv,text/csv">
+        </label>
+        <div class="file-status" id="s_fileStatus"></div>
+        <div id="s_parseError"></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="s_step2">
+      <div class="step-head"><span class="step-num">02</span><h2 class="step-title" data-i18n="step_configure">Configure the analysis</h2></div>
+      <p class="step-sub" data-i18n="focal_sub">Choose the group you want to focus on (the focal group). DIF statistics are directional, so the tool won't guess for you.</p>
+      <div class="step-body">
+        <div class="detected-box" id="s_detectedBox"></div>
+        <div class="config-grid">
+          <div>
+            <label class="field-label" data-i18n="lbl_focal">Focal group</label>
+            <select id="s_focalSelect"><option value="" data-i18n="opt_select">Select&hellip;</option></select>
+          </div>
+          <div>
+            <label class="field-label" data-i18n="s_lbl_method">Replicate variance estimator</label>
+            <div class="select-like" style="color:var(--ink-soft);" data-i18n="s_lbl_method_val">Jackknife (paired, built from stratum + PSU)</div>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" id="s_btnRun" type="button" disabled data-i18n="s_btnRun">&#9654; Run design-based DIF</button></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="s_step3">
+      <div class="step-head"><span class="step-num">03</span><h2 class="step-title" data-i18n="step_results">Results</h2></div>
+      <div class="step-body">
+        <div class="summary-line" id="s_summaryLine"></div>
+        <div class="table-scroll"><table class="results">
+          <thead><tr>
+            <th data-i18n="th_item">Item</th><th class="num">estimate (&Delta;MH)</th><th class="num">SE</th>
+            <th class="num">CI low</th><th class="num">CI high</th><th class="num" data-i18n="s_th_reps">Replicates</th>
+          </tr></thead>
+          <tbody id="s_resultsBody"></tbody>
+        </table></div>
+        <div class="result-actions"><button class="btn" id="s_btnDownloadResults" type="button" data-i18n="btn_download_results">&darr; Download results (CSV)</button></div>
+      </div>
+    </section>
+
+    <section class="step" style="margin-top:48px;border-top:1px solid var(--rule);padding-top:36px;">
+      <div class="step-head"><span class="step-num" data-i18n="s_bonus_tag">EXTRA</span><h2 class="step-title" data-i18n="s_pool_title">Pool estimates across analyses</h2></div>
+      <p class="step-sub" data-i18n="s_pool_sub">Combine independent DIF or disparity estimates &mdash; e.g. from several countries, cohorts, or booklets &mdash; by inverse-variance weighting.</p>
+      <div class="step-body">
+        <div class="btn-row">
+          <button class="btn" id="pool_btnTemplate" type="button" data-i18n="btn_template">&darr; Download data template (CSV)</button>
+          <button class="btn" id="pool_btnDemo" type="button" data-i18n="btn_demo">&#9655; Load sample data</button>
+        </div>
+        <label class="dropzone" id="pool_dropzone" for="pool_fileInput">
+          <div><strong data-i18n="dz_click">Click to choose a file</strong><span data-i18n="dz_drag">, or drag a CSV here</span></div>
+          <div style="margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);" data-i18n="s_pool_dz_hint">.csv &middot; needs analysis, estimate, se columns</div>
+          <input type="file" id="pool_fileInput" accept=".csv,text/csv">
+        </label>
+        <div class="file-status" id="pool_fileStatus"></div>
+        <div id="pool_parseError"></div>
+
+        <div class="config-grid" style="margin-top:18px;">
+          <div>
+            <label class="field-label" data-i18n="s_pool_method_lbl">Pooling method</label>
+            <select id="pool_method">
+              <option value="fixed" data-i18n="s_pool_fixed">Fixed effect (inverse-variance)</option>
+              <option value="random" data-i18n="s_pool_random">Random effects (DerSimonian&#8211;Laird)</option>
+            </select>
+          </div>
+        </div>
+        <div class="btn-row"><button class="btn btn-primary" id="pool_btnRun" type="button" disabled data-i18n="s_pool_btnRun">&#9654; Pool estimates</button></div>
+        <div id="pool_results" class="hidden">
+          <div class="kv-grid" id="pool_kv"></div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <div id="tab-pipeline" class="tabpanel">
+    <div class="intro-card" data-i18n="pl_intro">Attribute an end-to-end decision disparity to the pipeline stage that produced it &mdash; item, sampling, or model &mdash; by exact Shapley value, matching <code>difair.pipeline</code>.</div>
+
+    <section class="step">
+      <div class="step-head"><span class="step-num">01</span><h2 class="step-title" data-i18n="step_prepare">Prepare your data</h2></div>
+      <p class="step-sub" data-i18n="pl_prepare_sub">Group + dichotomous item columns, a true outcome, and optionally a proxy feature and a training-sample flag.</p>
+      <div class="step-body">
+        <div class="btn-row">
+          <button class="btn" id="pl_btnTemplate" type="button" data-i18n="btn_template">&darr; Download data template (CSV)</button>
+          <button class="btn" id="pl_btnDemo" type="button" data-i18n="btn_demo">&#9655; Load sample data</button>
+        </div>
+        <label class="dropzone" id="pl_dropzone" for="pl_fileInput">
+          <div><strong data-i18n="dz_click">Click to choose a file</strong><span data-i18n="dz_drag">, or drag a CSV here</span></div>
+          <div style="margin-top:6px;font-family:var(--font-mono);font-size:12px;color:var(--ink-faint);" data-i18n="pl_dz_hint">.csv &middot; needs group, outcome + 0/1 item columns; proxy, train_mask, train_outcome are optional</div>
+          <input type="file" id="pl_fileInput" accept=".csv,text/csv">
+        </label>
+        <div class="file-status" id="pl_fileStatus"></div>
+        <div id="pl_parseError"></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="pl_step2">
+      <div class="step-head"><span class="step-num">02</span><h2 class="step-title" data-i18n="step_configure">Configure the analysis</h2></div>
+      <p class="step-sub" data-i18n="focal_sub">Choose the group you want to focus on (the focal group). DIF statistics are directional, so the tool won't guess for you.</p>
+      <div class="step-body">
+        <div class="detected-box" id="pl_detectedBox"></div>
+        <div class="config-grid">
+          <div>
+            <label class="field-label" data-i18n="lbl_focal">Focal group</label>
+            <select id="pl_focalSelect"><option value="" data-i18n="opt_select">Select&hellip;</option></select>
+          </div>
+          <div>
+            <label class="field-label" data-i18n="pl_lbl_metric">Disparity metric</label>
+            <select id="pl_metricSelect">
+              <option value="demographic_parity" data-i18n="pl_metric_dp">Demographic parity</option>
+              <option value="equal_opportunity" data-i18n="pl_metric_eo">Equal opportunity</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label" data-i18n="pl_lbl_rate">Selection rate (share flagged)</label>
+            <input type="number" id="pl_rateInput" min="0.05" max="0.95" step="0.05" value="0.40">
+          </div>
+        </div>
+        <label class="field-label" data-i18n="pl_lbl_stages">Pipeline stages to include</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" id="pl_s_item" checked> <strong data-i18n="pl_stage_item">item</strong> <span data-i18n="pl_stage_item_desc">(drop DIF-flagged items from the score)</span></label>
+          <label><input type="checkbox" id="pl_s_sampling"> <strong data-i18n="pl_stage_sampling">sampling</strong> <span data-i18n="pl_stage_sampling_desc">(reweight training sample by group)</span></label>
+          <label><input type="checkbox" id="pl_s_model"> <strong data-i18n="pl_stage_model">model</strong> <span data-i18n="pl_stage_model_desc">(refit without the proxy feature)</span></label>
+        </div>
+        <div class="info-box" id="pl_stageNote" data-i18n="pl_stage_note">The sampling and model stages need a train_mask and a proxy column respectively &mdash; they're disabled until those columns are detected.</div>
+        <div class="btn-row"><button class="btn btn-primary" id="pl_btnRun" type="button" disabled data-i18n="pl_btnRun">&#9654; Run attribution</button></div>
+      </div>
+    </section>
+
+    <section class="step hidden" id="pl_step3">
+      <div class="step-head"><span class="step-num">03</span><h2 class="step-title" data-i18n="step_results">Results</h2></div>
+      <div class="step-body">
+        <div class="kv-grid" id="pl_kv"></div>
+        <div class="table-scroll"><table class="results">
+          <thead><tr>
+            <th data-i18n="pl_th_stage">Stage</th><th class="num" data-i18n="pl_th_shapley">Shapley value</th><th class="num" data-i18n="pl_th_share">Share of explained gap</th>
+          </tr></thead>
+          <tbody id="pl_resultsBody"></tbody>
+        </table></div>
+        <div class="result-actions"><button class="btn" id="pl_btnDownloadResults" type="button" data-i18n="btn_download_results">&darr; Download results (CSV)</button></div>
+      </div>
+    </section>
+  </div>
+
+  <footer id="footerBlock">
+    <h3 data-i18n="foot_method">Method &amp; limitations</h3>
+    <ul>
+      <li data-i18n="foot_li1">Every procedure here is a from-scratch JavaScript port of the corresponding function in the DIFair Python package, checked against its actual output on test data. Mantel&#8211;Haenszel, standardization, Breslow&#8211;Day, generalized Mantel&#8211;Haenszel, all fairness metrics, and the survey/jackknife functions match to 5+ decimal places. Logistic-regression-based procedures (item-level logistic DIF, ordinal logistic DIF, pipeline attribution) fit their own solver rather than statsmodels/scikit-learn's, so results are very close but not bit-identical, especially for pipeline attribution under sample reweighting.</li>
+      <li data-i18n="foot_li2">Being flagged for DIF or a fairness gap statistically doesn't automatically mean "unfair" &mdash; flagged items and gaps need expert content and context review.</li>
+      <li data-i18n="foot_li3">All tools here support two-group comparisons only, matching the underlying package. With a small sample (fewer than roughly 50 people), statistical power is limited and results should be treated as indicative only.</li>
+    </ul>
+  </footer>
+
+</div>
+
+<script>
+/* ================= Math utilities (validated against scipy) ================= */
+function logGamma(x) {
+  var g = 7;
+  var c = [0.99999999999980993,676.5203681218851,-1259.1392167224028,771.32342877765313,
+    -176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];
+  if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - logGamma(1 - x);
+  x -= 1;
+  var a = c[0];
+  var t = x + g + 0.5;
+  for (var i = 1; i < g + 2; i++) a += c[i] / (x + i);
+  return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a);
+}
+function gammaincLowerSeries(a, x) {
+  if (x <= 0) return 0;
+  var sum = 1 / a, term = sum;
+  for (var n = 1; n < 500; n++) {
+    term *= x / (a + n);
+    sum += term;
+    if (Math.abs(term) < Math.abs(sum) * 1e-16) break;
+  }
+  return sum * Math.exp(-x + a * Math.log(x) - logGamma(a));
+}
+function gammaincUpperCF(a, x) {
+  var FPMIN = 1e-300;
+  var b = x + 1 - a, c = 1 / FPMIN, d = 1 / b, h = d;
+  for (var i = 1; i < 500; i++) {
+    var an = -i * (i - a);
+    b += 2; d = an * d + b;
+    if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = b + an / c;
+    if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    var del = d * c; h *= del;
+    if (Math.abs(del - 1) < 1e-16) break;
+  }
+  return Math.exp(-x + a * Math.log(x) - logGamma(a)) * h;
+}
+function gammaincUpperRegularized(a, x) {
+  if (x < 0 || a <= 0) return NaN;
+  if (x === 0) return 1;
+  return (x < a + 1) ? 1 - gammaincLowerSeries(a, x) : gammaincUpperCF(a, x);
+}
+function chi2SF(x, df) {
+  if (!isFinite(x) || x <= 0) return 1;
+  if (df <= 0) return NaN;
+  return gammaincUpperRegularized(df / 2, x / 2);
+}
+function normPPF(p) {
+  var a=[-3.969683028665376e+01,2.209460984245205e+02,-2.759285104469687e+02,1.383577518672690e+02,-3.066479806614716e+01,2.506628277459239e+00];
+  var b=[-5.447609879822406e+01,1.615858368580409e+02,-1.556989798598866e+02,6.680131188771972e+01,-1.328068155288572e+01];
+  var c=[-7.784894002430293e-03,-3.223964580411365e-01,-2.400758277161838e+00,-2.549732539343734e+00,4.374664141464968e+00,2.938163982698783e+00];
+  var d=[7.784695709041462e-03,3.224671290700398e-01,2.445134137142996e+00,3.754408661907416e+00];
+  var plow=0.02425, phigh=1-plow, q, r;
+  if (p<plow) { q=Math.sqrt(-2*Math.log(p)); return (((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+  if (p>phigh) { q=Math.sqrt(-2*Math.log(1-p)); return -(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5]) / ((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1); }
+  q=p-0.5; r=q*q;
+  return (((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q / (((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1);
+}
+function sigmoid(x){ return 1/(1+Math.exp(-x)); }
+function matInv(A) {
+  var n = A.length;
+  var M = A.map(function(row,i){ return row.concat(Array.from({length:n},function(_,j){ return i===j?1:0; })); });
+  for (var col=0; col<n; col++) {
+    var piv = col;
+    for (var r=col+1; r<n; r++) if (Math.abs(M[r][col]) > Math.abs(M[piv][col])) piv = r;
+    if (Math.abs(M[piv][col]) < 1e-14) throw new Error('singular matrix');
+    var tmp = M[col]; M[col] = M[piv]; M[piv] = tmp;
+    var pv = M[col][col];
+    for (var k=0; k<2*n; k++) M[col][k] /= pv;
+    for (var r2=0; r2<n; r2++) {
+      if (r2===col) continue;
+      var f = M[r2][col];
+      if (f===0) continue;
+      for (var k2=0; k2<2*n; k2++) M[r2][k2] -= f*M[col][k2];
+    }
+  }
+  return M.map(function(row){ return row.slice(n); });
+}
+function matVec(A, v) { return A.map(function(row){ return row.reduce(function(s,a,j){ return s+a*v[j]; },0); }); }
+function meanStd(arr) {
+  var n=arr.length, m=arr.reduce(function(a,b){return a+b;},0)/n;
+  var v=arr.reduce(function(s,x){return s+(x-m)*(x-m);},0)/n;
+  return [m, Math.sqrt(v)];
+}
+function standardizeArr(arr) {
+  var ms = meanStd(arr);
+  return ms[1]>0 ? arr.map(function(v){ return (v-ms[0])/ms[1]; }) : arr.slice();
+}
+function quantileArr(arr, q) {
+  var sorted = arr.slice().sort(function(a,b){return a-b;});
+  var n = sorted.length;
+  if (n===0) return NaN;
+  var pos = q*(n-1);
+  var lo = Math.floor(pos), hi = Math.ceil(pos);
+  if (lo===hi) return sorted[lo];
+  return sorted[lo] + (sorted[hi]-sorted[lo])*(pos-lo);
+}
+function rankData(arr) {
+  var idx = arr.map(function(v,i){return i;}).sort(function(a,b){return arr[a]-arr[b];});
+  var ranks = new Array(arr.length);
+  var i=0;
+  while (i<idx.length) {
+    var j=i;
+    while (j+1<idx.length && arr[idx[j+1]]===arr[idx[i]]) j++;
+    var avgRank = (i+1+j+1)/2;
+    for (var k=i;k<=j;k++) ranks[idx[k]] = avgRank;
+    i=j+1;
+  }
+  return ranks;
+}
+/* ================= Logistic regression solvers (validated vs statsmodels/sklearn) ================= */
+function fitLogitIRLS(X, y, opts) {
+  opts = opts || {};
+  var maxIter = opts.maxIter || 100, tol = opts.tol || 1e-10;
+  var n = X.length, k = X[0].length;
+  var beta = new Array(k).fill(0);
+  for (var iter=0; iter<maxIter; iter++) {
+    var eta = X.map(function(row){ return row.reduce(function(s,x,j){return s+x*beta[j];},0); });
+    var p = eta.map(sigmoid);
+    var grad = new Array(k).fill(0);
+    for (var i=0;i<n;i++) for (var j=0;j<k;j++) grad[j] += X[i][j]*(y[i]-p[i]);
+    var H = Array.from({length:k},function(){return new Array(k).fill(0);});
+    for (var i2=0;i2<n;i2++) {
+      var w = p[i2]*(1-p[i2]);
+      for (var a=0;a<k;a++) for (var b=0;b<k;b++) H[a][b] -= X[i2][a]*w*X[i2][b];
+    }
+    var Hinv = matInv(H);
+    var step = matVec(Hinv, grad);
+    var maxDelta = 0;
+    for (var j2=0;j2<k;j2++) { beta[j2] -= step[j2]; maxDelta = Math.max(maxDelta, Math.abs(step[j2])); }
+    if (maxDelta < tol) break;
+  }
+  var etaFinal = X.map(function(row){ return row.reduce(function(s,x,j){return s+x*beta[j];},0); });
+  var llf = 0;
+  for (var i3=0;i3<n;i3++) {
+    var pc = Math.min(Math.max(sigmoid(etaFinal[i3]), 1e-12), 1-1e-12);
+    llf += y[i3]*Math.log(pc) + (1-y[i3])*Math.log(1-pc);
+  }
+  return {beta:beta, llf:llf};
+}
+
+// L2-regularized (ridge) logistic regression via IRLS, matching sklearn's default C=1.0
+// X col 0 must be the intercept (not penalized). sw = optional per-sample weights.
+function fitRidgeLogitIRLS(X, y, lambda, sw, opts) {
+  opts = opts || {};
+  var maxIter = opts.maxIter || 200, tol = opts.tol || 1e-10;
+  var n = X.length, k = X[0].length;
+  var w = sw || new Array(n).fill(1);
+  var beta = new Array(k).fill(0);
+  for (var iter=0; iter<maxIter; iter++) {
+    var eta = X.map(function(row){ return row.reduce(function(s,x,j){return s+x*beta[j];},0); });
+    var p = eta.map(sigmoid);
+    var grad = new Array(k).fill(0);
+    for (var i=0;i<n;i++) for (var j=0;j<k;j++) grad[j] += w[i]*X[i][j]*(y[i]-p[i]);
+    for (var j1=1;j1<k;j1++) grad[j1] -= lambda*beta[j1];
+    var H = Array.from({length:k},function(){return new Array(k).fill(0);});
+    for (var i2=0;i2<n;i2++) {
+      var wi = w[i2]*p[i2]*(1-p[i2]);
+      for (var a=0;a<k;a++) for (var b=0;b<k;b++) H[a][b] -= X[i2][a]*wi*X[i2][b];
+    }
+    for (var j3=1;j3<k;j3++) H[j3][j3] -= lambda;
+    var Hinv = matInv(H);
+    var step = matVec(Hinv, grad);
+    var maxDelta = 0;
+    for (var j2=0;j2<k;j2++) { beta[j2] -= step[j2]; maxDelta = Math.max(maxDelta, Math.abs(step[j2])); }
+    if (maxDelta < tol) break;
+  }
+  return {beta:beta};
+}
+
+function nagelkerke(llModel, y) {
+  var n = y.length;
+  var p = y.reduce(function(a,b){return a+b;},0)/n;
+  if (p<=0 || p>=1) return 0;
+  var llNull = n*(p*Math.log(p)+(1-p)*Math.log(1-p));
+  if (llNull===0) return 0;
+  var coxSnell = 1-Math.exp((2/n)*(llNull-llModel));
+  var denom = 1-Math.exp((2/n)*llNull);
+  return denom>0 ? coxSnell/denom : 0;
+}
+/* ================= Cumulative logit (proportional-odds) model + Nelder-Mead ================= */
+function cumlogitNLL(params, y, X, nCat) {
+  var k = nCat - 1;
+  var first = params[0];
+  var incr = params.slice(1, k);
+  var beta = params.slice(k);
+  var n = y.length, p = beta.length;
+  var cuts = new Array(k);
+  cuts[0] = first;
+  var acc = first;
+  for (var i=0; i<incr.length; i++) { acc += Math.exp(incr[i]); cuts[i+1] = acc; }
+  var nll = 0;
+  for (var idx=0; idx<n; idx++) {
+    var eta = 0;
+    for (var j=0;j<p;j++) eta += X[idx][j]*beta[j];
+    var yi = y[idx];
+    var cumLo = (yi === 0) ? 0 : sigmoid(cuts[yi-1]-eta);
+    var cumHi = (yi === k) ? 1 : sigmoid(cuts[yi]-eta);
+    var prob = cumHi - cumLo;
+    if (prob < 1e-12) prob = 1e-12;
+    nll -= Math.log(prob);
+  }
+  return nll;
+}
+
+function nelderMead(f, x0, opts) {
+  opts = opts || {};
+  var maxIter = opts.maxIter || 2000, tolFun = opts.tolFun || 1e-9, tolX = opts.tolX || 1e-9;
+  var n = x0.length;
+  if (n === 0) return { x: [], fval: f([]) };
+  var alpha=1, gamma=2, rho=0.5, sigma=0.5;
+  var simplex = [x0.slice()];
+  for (var i=0;i<n;i++) {
+    var xi = x0.slice();
+    var h = xi[i] !== 0 ? 0.05*Math.abs(xi[i]) : 0.05;
+    xi[i] += h;
+    simplex.push(xi);
+  }
+  var fvals = simplex.map(f);
+  for (var iter=0; iter<maxIter; iter++) {
+    var order = fvals.map(function(v,i){return i;}).sort(function(a,b){return fvals[a]-fvals[b];});
+    simplex = order.map(function(i){return simplex[i];});
+    fvals = order.map(function(i){return fvals[i];});
+    var fRange = Math.abs(fvals[n]-fvals[0]);
+    var xRange = 0;
+    for (var i2=1;i2<=n;i2++) {
+      var d=0;
+      for (var j2=0;j2<n;j2++) d += Math.abs(simplex[i2][j2]-simplex[0][j2]);
+      xRange = Math.max(xRange, d);
+    }
+    if (fRange < tolFun && xRange < tolX) break;
+    var centroid = new Array(n).fill(0);
+    for (var i3=0;i3<n;i3++) for (var j3=0;j3<n;j3++) centroid[j3] += simplex[i3][j3]/n;
+    var worst = simplex[n];
+    var xr = centroid.map(function(c,j){return c + alpha*(c-worst[j]);});
+    var fr = f(xr);
+    if (fr < fvals[0]) {
+      var xe = centroid.map(function(c,j){return c + gamma*(xr[j]-c);});
+      var fe = f(xe);
+      if (fe < fr) { simplex[n]=xe; fvals[n]=fe; } else { simplex[n]=xr; fvals[n]=fr; }
+    } else if (fr < fvals[n-1]) {
+      simplex[n]=xr; fvals[n]=fr;
+    } else {
+      var xc = centroid.map(function(c,j){return c + rho*(worst[j]-c);});
+      var fc = f(xc);
+      if (fc < fvals[n]) { simplex[n]=xc; fvals[n]=fc; }
+      else {
+        for (var i4=1;i4<=n;i4++) {
+          for (var j4=0;j4<n;j4++) simplex[i4][j4] = simplex[0][j4] + sigma*(simplex[i4][j4]-simplex[0][j4]);
+          fvals[i4] = f(simplex[i4]);
+        }
+      }
+    }
+  }
+  var order2 = fvals.map(function(v,i){return i;}).sort(function(a,b){return fvals[a]-fvals[b];});
+  return { x: simplex[order2[0]], fval: fvals[order2[0]] };
+}
+
+function fitCumlogit(y, X, nCat, start) {
+  var k = nCat - 1;
+  var p = X.length ? X[0].length : 0;
+  if (!start) {
+    var counts = new Array(nCat).fill(0);
+    for (var idx=0; idx<y.length; idx++) counts[y[idx]]++;
+    var n = y.length;
+    var freq = counts.map(function(c){return c/n;});
+    var cum = [];
+    var acc = 0;
+    for (var i=0;i<nCat-1;i++) { acc += freq[i]; cum.push(Math.min(Math.max(acc,1e-3),1-1e-3)); }
+    var q = cum.map(function(c){return Math.log(c/(1-c));});
+    var s = [q[0]];
+    if (k>1) {
+      for (var i2=1;i2<q.length;i2++) { var d = q[i2]-q[i2-1]; s.push(Math.log(Math.max(d,1e-3))); }
+    }
+    for (var i3=0;i3<p;i3++) s.push(0);
+    start = s;
+  }
+  var f = function(params) { return cumlogitNLL(params, y, X, nCat); };
+  var res = nelderMead(f, start, {maxIter: 3000, tolFun:1e-10, tolX:1e-10});
+  return { ll: -res.fval, params: res.x };
+}
+/* ================= Dichotomous DIF engine (matches difair.dif) ================= */
+function computeMH(itemCol, isFocal, matching) {
+  var strata = new Map();
+  for (var i = 0; i < itemCol.length; i++) {
+    var u = itemCol[i];
+    if (u === null || u === undefined || isNaN(u)) continue;
+    var s = matching[i];
+    if (s === null || s === undefined || isNaN(s)) continue;
+    if (!strata.has(s)) strata.set(s, {a:0,b:0,c:0,d:0});
+    var cell = strata.get(s);
+    if (!isFocal[i]) { if (u===1) cell.a++; else cell.b++; }
+    else { if (u===1) cell.c++; else cell.d++; }
+  }
+  var sumR=0, sumS=0, sumA=0, sumE=0, sumV=0, nStrata=0, nRefTotal=0, nFocTotal=0;
+  strata.forEach(function (cell) {
+    var a=cell.a, b=cell.b, c=cell.c, d=cell.d;
+    var T = a+b+c+d;
+    if (T===0) return;
+    var nr = a+b, nf = c+d, m1 = a+c, m0 = b+d;
+    if (nr===0 || nf===0) return;
+    nStrata++;
+    nRefTotal += nr; nFocTotal += nf;
+    var R = (a*d)/T, S = (b*c)/T;
+    sumR += R; sumS += S;
+    sumA += a;
+    var E = (nr*m1)/T;
+    sumE += E;
+    var V = T>1 ? (nr*nf*m1*m0)/(T*T*(T-1)) : 0;
+    sumV += V;
+  });
+  if (sumS<=0 || sumR<=0) return {alpha_mh:NaN, delta_mh:NaN, chi2:NaN, p_value:NaN, n_strata:nStrata, n_ref:nRefTotal, n_foc:nFocTotal};
+  var alpha_mh = sumR/sumS;
+  var delta_mh = -2.35*Math.log(alpha_mh);
+  var num = Math.abs(sumA - sumE) - 0.5;
+  if (num < 0) num = 0;
+  var chi2 = sumV>0 ? (num*num)/sumV : NaN;
+  var p_value = isFinite(chi2) ? chi2SF(chi2,1) : NaN;
+  return {alpha_mh:alpha_mh, delta_mh:delta_mh, chi2:chi2, p_value:p_value, n_strata:nStrata, n_ref:nRefTotal, n_foc:nFocTotal};
+}
+function etsClassMH(delta, p, alpha) {
+  alpha = alpha || 0.05;
+  if (!isFinite(delta) || !isFinite(p)) return 'U';
+  if (p >= alpha || Math.abs(delta) < 1.0) return 'A';
+  return Math.abs(delta) >= 1.5 ? 'C' : 'B';
+}
+function favorsMH(delta) {
+  if (!isFinite(delta)) return 'undetermined';
+  if (delta < 0) return 'reference';
+  if (delta > 0) return 'focal';
+  return 'neither';
+}
+
+function strataTables(itemCol, isFocal, matching) {
+  var strata = new Map();
+  for (var i=0;i<itemCol.length;i++) {
+    var u = itemCol[i];
+    if (isNaN(u) || isNaN(matching[i])) continue;
+    var s = matching[i];
+    if (!strata.has(s)) strata.set(s, {a:0,b:0,c:0,d:0});
+    var cell = strata.get(s);
+    if (!isFocal[i]) { if (u===1) cell.a++; else cell.b++; }
+    else { if (u===1) cell.c++; else cell.d++; }
+  }
+  var rows = [];
+  strata.forEach(function(cell) {
+    var a=cell.a,b=cell.b,c=cell.c,d=cell.d;
+    var T=a+b+c+d, nr=a+b, nf=c+d, m1=a+c, m0=b+d;
+    if (nr===0 || nf===0) return;
+    rows.push({a:a,b:b,c:c,d:d,T:T,nr:nr,nf:nf,m1:m1,m0:m0});
+  });
+  return rows;
+}
+
+function standardization(itemCol, isFocal, matching) {
+  var rows = strataTables(itemCol, isFocal, matching);
+  if (rows.length===0) return {std_p_dif:NaN, std_class:'undetermined', favors:'undetermined', n_strata:0};
+  var num=0, den=0;
+  rows.forEach(function(r){
+    var pf = r.c/r.nf, pr = r.a/r.nr, w = r.nf;
+    num += w*(pf-pr); den += w;
+  });
+  var std = num/den;
+  var cls='undetermined';
+  if (isFinite(std)) { var a = Math.abs(std); cls = a<0.05 ? 'negligible' : (a>=0.10 ? 'large' : 'moderate'); }
+  var favors = !isFinite(std) ? 'undetermined' : (std>0?'focal':(std<0?'reference':'neither'));
+  return {std_p_dif:std, std_class:cls, favors:favors, n_strata: rows.length};
+}
+
+function bdExpected(psi, nr, m1, T) {
+  var lo = Math.max(0, nr+m1-T), hi = Math.min(nr, m1);
+  if (hi <= lo) return null;
+  var A = 1-psi, B = (T-nr-m1)+psi*(nr+m1), C = -psi*nr*m1;
+  if (Math.abs(A) < 1e-12) {
+    if (Math.abs(B) < 1e-12) return null;
+    var root = -C/B;
+    return (root>lo && root<hi) ? root : null;
+  }
+  var disc = B*B-4*A*C;
+  if (disc<0) return null;
+  var sq = Math.sqrt(disc);
+  var r1 = (-B+sq)/(2*A), r2 = (-B-sq)/(2*A);
+  if (r1>lo && r1<hi) return r1;
+  if (r2>lo && r2<hi) return r2;
+  return null;
+}
+
+function breslowDay(itemCol, isFocal, matching, tarone) {
+  tarone = tarone !== false;
+  var rows = strataTables(itemCol, isFocal, matching).filter(function(r){return r.T>1;});
+  if (rows.length < 2) return {bd_stat:NaN, df:0, p_value:NaN, nonuniform_flag:false};
+  var sumR=0, sumS=0;
+  rows.forEach(function(r){ sumR += r.a*r.d/r.T; sumS += r.b*r.c/r.T; });
+  if (sumS<=0 || sumR<=0) return {bd_stat:NaN, df:0, p_value:NaN, nonuniform_flag:false};
+  var psi = sumR/sumS;
+  var stat=0, varSum=0, eSum=0, aSum=0;
+  rows.forEach(function(r){
+    aSum += r.a;
+    var e = bdExpected(psi, r.nr, r.m1, r.T);
+    if (e===null) return;
+    var b_ = r.nr-e, c_ = r.m1-e, d_ = r.T-r.nr-r.m1+e;
+    if (Math.min(e,b_,c_,d_) <= 0) return;
+    var varK = 1/(1/e + 1/b_ + 1/c_ + 1/d_);
+    stat += (r.a-e)*(r.a-e)/varK;
+    varSum += varK; eSum += e;
+  });
+  var df = rows.length - 1;
+  if (tarone && varSum > 0) stat -= (aSum-eSum)*(aSum-eSum)/varSum;
+  stat = Math.max(stat, 0);
+  var p = df>0 ? chi2SF(stat, df) : NaN;
+  return {bd_stat:stat, df:df, p_value:p, nonuniform_flag: isFinite(p) && p<0.05};
+}
+
+function logisticDif(itemCol, isFocal, matching) {
+  var n = itemCol.length;
+  var idx=[];
+  for (var i=0;i<n;i++) if(!isNaN(itemCol[i]) && !isNaN(matching[i])) idx.push(i);
+  var y = idx.map(function(i){return itemCol[i];});
+  var sRaw = idx.map(function(i){return matching[i];});
+  var g = idx.map(function(i){return isFocal[i]?1:0;});
+  var uniqY = new Set(y), uniqG = new Set(g);
+  if (y.length<20 || uniqY.size<2 || uniqG.size<2) return null;
+  var s = standardizeArr(sRaw);
+  var X0 = s.map(function(v){return [1,v];});
+  var X1 = s.map(function(v,i){return [1,v,g[i]];});
+  var X2 = s.map(function(v,i){return [1,v,g[i],v*g[i]];});
+  var m0 = fitLogitIRLS(X0,y,{maxIter:200, tol:1e-12});
+  var m1 = fitLogitIRLS(X1,y,{maxIter:200, tol:1e-12});
+  var m2 = fitLogitIRLS(X2,y,{maxIter:200, tol:1e-12});
+  var chiTot = Math.max(2*(m2.llf-m0.llf),0);
+  var chiUni = Math.max(2*(m1.llf-m0.llf),0);
+  var chiNon = Math.max(2*(m2.llf-m1.llf),0);
+  var dr2 = Math.max(nagelkerke(m2.llf,y) - nagelkerke(m0.llf,y), 0);
+  var cls = !isFinite(dr2) ? 'undetermined' : (dr2<0.035?'negligible':(dr2>=0.070?'large':'moderate'));
+  return {
+    chi2_total: chiTot, p_total: chi2SF(chiTot,2),
+    chi2_uniform: chiUni, p_uniform: chi2SF(chiUni,1),
+    chi2_nonuniform: chiNon, p_nonuniform: chi2SF(chiNon,1),
+    beta_group: m2.beta[2], beta_interaction: m2.beta[3],
+    delta_r2: dr2, zt_class: cls
+  };
+}
+
+// Purify matching score by iteratively excluding MH-flagged (B/C) items
+function purifyDichotomous(matrix, isFocal, itemNames, maxIter, alpha) {
+  maxIter = maxIter || 5; alpha = alpha || 0.05;
+  var flagged = new Set();
+  for (var it = 0; it < maxIter; it++) {
+    var keepIdx = [];
+    for (var k = 0; k < itemNames.length; k++) if (!flagged.has(itemNames[k])) keepIdx.push(k);
+    if (keepIdx.length < 2) break;
+    var matching = matrix.map(function (row) {
+      var s = 0, any = false;
+      for (var ki = 0; ki < keepIdx.length; ki++) {
+        var v = row[keepIdx[ki]];
+        if (v !== null && v !== undefined && !isNaN(v)) { s += v; any = true; }
+      }
+      return any ? s : NaN;
+    });
+    var newFlagged = new Set();
+    for (var j = 0; j < itemNames.length; j++) {
+      var itemCol = matrix.map(function (row) { return row[j]; });
+      var res = computeMH(itemCol, isFocal, matching);
+      var cls = etsClassMH(res.delta_mh, res.p_value, alpha);
+      if (cls === 'B' || cls === 'C') newFlagged.add(itemNames[j]);
+    }
+    var same = newFlagged.size === flagged.size;
+    if (same) newFlagged.forEach(function (x) { if (!flagged.has(x)) same = false; });
+    flagged = newFlagged;
+    if (same) break;
+  }
+  var finalKeep = [];
+  for (var k2 = 0; k2 < itemNames.length; k2++) if (!flagged.has(itemNames[k2])) finalKeep.push(k2);
+  var idxs = finalKeep.length ? finalKeep : itemNames.map(function(_,i){return i;});
+  var finalMatching = matrix.map(function (row) {
+    var s = 0, any = false;
+    for (var ki = 0; ki < idxs.length; ki++) {
+      var v = row[idxs[ki]];
+      if (v !== null && v !== undefined && !isNaN(v)) { s += v; any = true; }
+    }
+    return any ? s : NaN;
+  });
+  return {matching: finalMatching, flagged: flagged};
+}
+
+function simpleMatchingScore(matrix) {
+  return matrix.map(function(row){
+    var s=0, any=false;
+    for (var i=0;i<row.length;i++) { var v=row[i]; if (v!==null&&v!==undefined&&!isNaN(v)) { s+=v; any=true; } }
+    return any? s: NaN;
+  });
+}
+/* ================= Polytomous DIF engine (matches difair.poly) ================= */
+function generalizedMH(itemCol, isFocal, matching, alpha) {
+  alpha = alpha || 0.05;
+  var n = itemCol.length;
+  var ok = [];
+  for (var i=0;i<n;i++) if (!isNaN(itemCol[i]) && !isNaN(matching[i])) ok.push(i);
+
+  var strataMap = new Map();
+  for (var oi=0; oi<ok.length; oi++) {
+    var i2 = ok[oi];
+    var s = matching[i2];
+    if (!strataMap.has(s)) strataMap.set(s, []);
+    strataMap.get(s).push(i2);
+  }
+
+  var sumFoc=0, sumExp=0, sumVar=0, nStrata=0;
+  var sw=0, swy=0;
+  for (var oj=0; oj<ok.length; oj++) { sw += 1; swy += itemCol[ok[oj]]; }
+  var mu = swy/sw;
+  var swvar=0;
+  for (var ok2=0; ok2<ok.length; ok2++) swvar += Math.pow(itemCol[ok[ok2]]-mu,2);
+  var varAll = (swvar/sw) * sw/Math.max(sw-1,1);
+  var sdAll = Math.sqrt(varAll);
+
+  var stratRows = [];
+  strataMap.forEach(function(idxs) {
+    var cntAll = idxs.length;
+    var cntFoc=0, sAll=0, sSq=0, sFoc=0;
+    for (var ii=0; ii<idxs.length; ii++) {
+      var v = itemCol[idxs[ii]];
+      sAll += v; sSq += v*v;
+      if (isFocal[idxs[ii]]) { cntFoc++; sFoc += v; }
+    }
+    if (cntFoc===0 || cntFoc===cntAll) return;
+    nStrata++;
+    var expected = cntFoc * sAll / cntAll;
+    var varK = 0;
+    if (cntAll > 1) varK = cntFoc*(cntAll-cntFoc)*(cntAll*sSq - sAll*sAll) / (cntAll*cntAll*(cntAll-1));
+    sumFoc += sFoc; sumExp += expected; sumVar += varK;
+    stratRows.push({cntAll:cntAll, cntFoc:cntFoc, sAll:sAll, sFoc:sFoc});
+  });
+
+  if (nStrata===0) return {chi2:NaN, p_value:NaN, smd:NaN, smd_class:'undetermined', n_strata:0, favors:'undetermined'};
+
+  var chi2 = sumVar>0 ? Math.pow(sumFoc-sumExp,2)/sumVar : NaN;
+  var p_value = isFinite(chi2) ? chi2SF(chi2,1) : NaN;
+
+  var totalCntAll=0;
+  stratRows.forEach(function(r){ totalCntAll += r.cntAll; });
+  var meanFoc=0, meanRef=0;
+  stratRows.forEach(function(r){
+    var w = r.cntAll/totalCntAll;
+    meanFoc += w * (r.sFoc/r.cntFoc);
+    meanRef += w * ((r.sAll-r.sFoc)/(r.cntAll-r.cntFoc));
+  });
+  var smd = sdAll>0 ? (meanFoc-meanRef)/sdAll : NaN;
+
+  var smd_class = 'undetermined';
+  if (isFinite(smd) && isFinite(p_value)) {
+    if (p_value >= alpha || Math.abs(smd) < 0.17) smd_class = 'A';
+    else smd_class = Math.abs(smd) >= 0.25 ? 'C' : 'B';
+  }
+  var favors = !isFinite(smd) ? 'undetermined' : (smd>0?'focal':(smd<0?'reference':'neither'));
+  return {chi2:chi2, p_value:p_value, smd:smd, smd_class:smd_class, n_strata:nStrata, favors:favors};
+}
+
+function ordinalLogisticDif(itemCol, isFocal, matching) {
+  var n = itemCol.length;
+  var idx = [];
+  for (var i=0;i<n;i++) if(!isNaN(itemCol[i]) && !isNaN(matching[i])) idx.push(i);
+  var yRaw = idx.map(function(i){return itemCol[i];});
+  var sRaw = idx.map(function(i){return matching[i];});
+  var g = idx.map(function(i){return isFocal[i]?1:0;});
+
+  var uniqueVals = Array.from(new Set(yRaw)).sort(function(a,b){return a-b;});
+  var nCat = uniqueVals.length;
+  var valToRank = new Map(uniqueVals.map(function(v,i){return [v,i];}));
+  var y = yRaw.map(function(v){return valToRank.get(v);});
+  var uniqG = new Set(g);
+  if (y.length < 30 || uniqueVals.length < 2 || uniqG.size < 2) return null;
+  var s = standardizeArr(sRaw);
+
+  var X0 = s.map(function(v){return [v];});
+  var X1 = s.map(function(v,i){return [v, g[i]];});
+  var X2 = s.map(function(v,i){return [v, g[i], v*g[i]];});
+
+  var f0 = fitCumlogit(y, X0, nCat);
+  var start1 = f0.params.concat([0.0]);
+  var f1 = fitCumlogit(y, X1, nCat, start1);
+  var start2 = f1.params.concat([0.0]);
+  var f2 = fitCumlogit(y, X2, nCat, start2);
+
+  var chiTot = Math.max(2*(f2.ll-f0.ll), 0);
+  var chiUni = Math.max(2*(f1.ll-f0.ll), 0);
+  var chiNon = Math.max(2*(f2.ll-f1.ll), 0);
+
+  return {
+    n_categories: nCat,
+    chi2_total: chiTot, p_total: chi2SF(chiTot,2),
+    chi2_uniform: chiUni, p_uniform: chi2SF(chiUni,1),
+    chi2_nonuniform: chiNon, p_nonuniform: chi2SF(chiNon,1),
+    beta_group: f2.params[f2.params.length-2],
+    beta_interaction: f2.params[f2.params.length-1],
+  };
+}
+
+function purifyPoly(matrix, isFocal, itemNames, maxIter, alpha) {
+  maxIter = maxIter || 5; alpha = alpha || 0.05;
+  var flagged = new Set();
+  for (var it=0; it<maxIter; it++) {
+    var keepIdx = [];
+    for (var k=0;k<itemNames.length;k++) if (!flagged.has(itemNames[k])) keepIdx.push(k);
+    if (keepIdx.length < 2) break;
+    var matching = matrix.map(function(row) {
+      var s=0, any=false;
+      for (var ki=0; ki<keepIdx.length; ki++) { var v=row[keepIdx[ki]]; if (!isNaN(v)) { s+=v; any=true; } }
+      return any? s: NaN;
+    });
+    var newFlagged = new Set();
+    for (var j=0;j<itemNames.length;j++) {
+      var col = matrix.map(function(row){return row[j];});
+      var res = generalizedMH(col, isFocal, matching, alpha);
+      if (res.smd_class==='B'||res.smd_class==='C') newFlagged.add(itemNames[j]);
+    }
+    var same = newFlagged.size===flagged.size;
+    if (same) newFlagged.forEach(function(x){ if(!flagged.has(x)) same=false; });
+    flagged = newFlagged;
+    if (same) break;
+  }
+  var keepIdx2=[];
+  for (var k2=0;k2<itemNames.length;k2++) if (!flagged.has(itemNames[k2])) keepIdx2.push(k2);
+  var idxs = keepIdx2.length? keepIdx2 : itemNames.map(function(_,i){return i;});
+  var matching = matrix.map(function(row){
+    var s=0, any=false;
+    for (var ki=0; ki<idxs.length; ki++) { var v=row[idxs[ki]]; if(!isNaN(v)) { s+=v; any=true; } }
+    return any? s: NaN;
+  });
+  return {matching: matching, flagged: flagged};
+}
+/* ================= Fairness metrics engine (matches difair.fairness) ================= */
+function safeDivF(num, den) { return den>0 ? num/den : NaN; }
+
+function groupRates(yTrue, yPred, group) {
+  var labels = Array.from(new Set(group));
+  var rows = [];
+  for (var li=0; li<labels.length; li++) {
+    var lab = labels[li];
+    var idx = [];
+    for (var i=0;i<group.length;i++) if (group[i]===lab) idx.push(i);
+    var yp = idx.map(function(i){return yPred[i];});
+    var n = idx.length;
+    var row = {group: lab, n: n, selection_rate: yp.reduce(function(a,b){return a+b;},0)/n};
+    if (yTrue) {
+      var yt = idx.map(function(i){return yTrue[i];});
+      var tp=0,fp=0,tn=0,fn=0;
+      for (var k=0;k<idx.length;k++) {
+        if (yp[k]===1 && yt[k]===1) tp++;
+        else if (yp[k]===1 && yt[k]===0) fp++;
+        else if (yp[k]===0 && yt[k]===0) tn++;
+        else if (yp[k]===0 && yt[k]===1) fn++;
+      }
+      row.tpr = safeDivF(tp, tp+fn);
+      row.fpr = safeDivF(fp, fp+tn);
+      row.tnr = safeDivF(tn, tn+fp);
+      row.fnr = safeDivF(fn, fn+tp);
+      row.ppv = safeDivF(tp, tp+fp);
+      row.accuracy = safeDivF(tp+tn, yt.length);
+    }
+    rows.push(row);
+  }
+  return rows;
+}
+function gapF(rates, col, focalLabel) {
+  var foc = rates.filter(function(r){return r.group===focalLabel;})[0];
+  var ref = rates.filter(function(r){return r.group!==focalLabel;})[0];
+  if (!foc || !ref || !isFinite(foc[col]) || !isFinite(ref[col])) return NaN;
+  return foc[col]-ref[col];
+}
+function demographicParity(yPred, group, focalLabel) {
+  var rates = groupRates(null, yPred, group);
+  var foc = rates.filter(function(r){return r.group===focalLabel;})[0].selection_rate;
+  var ref = rates.filter(function(r){return r.group!==focalLabel;})[0].selection_rate;
+  return { metric:'demographic_parity', focal_rate:foc, reference_rate:ref, difference: foc-ref,
+    ratio: Math.max(foc,ref)>0 ? Math.min(foc,ref)/Math.max(foc,ref) : NaN };
+}
+function equalizedOdds(yTrue, yPred, group, focalLabel) {
+  var rates = groupRates(yTrue, yPred, group);
+  var tpr = gapF(rates,'tpr',focalLabel), fpr = gapF(rates,'fpr',focalLabel);
+  var finite = [tpr,fpr].filter(isFinite).map(Math.abs);
+  return {metric:'equalized_odds', tpr_difference:tpr, fpr_difference:fpr, max_violation: finite.length?Math.max.apply(null,finite):NaN};
+}
+function equalOpportunity(yTrue, yPred, group, focalLabel) {
+  var rates = groupRates(yTrue, yPred, group);
+  return {metric:'equal_opportunity', tpr_difference: gapF(rates,'tpr',focalLabel)};
+}
+function predictiveParity(yTrue, yPred, group, focalLabel) {
+  var rates = groupRates(yTrue, yPred, group);
+  return {metric:'predictive_parity', ppv_difference: gapF(rates,'ppv',focalLabel)};
+}
+function calibrationGap(yTrue, yScore, group, focalLabel, nBins) {
+  nBins = nBins || 10;
+  var labels = Array.from(new Set(group));
+  var edges = Array.from({length:nBins+1}, function(_,i){return i/nBins;});
+  var out = {};
+  for (var li=0; li<labels.length; li++) {
+    var lab = labels[li];
+    var idx = [];
+    for (var i=0;i<group.length;i++) if (group[i]===lab) idx.push(i);
+    var s = idx.map(function(i){return yScore[i];}), t = idx.map(function(i){return yTrue[i];});
+    if (s.length===0) { out[lab]=NaN; continue; }
+    var ece=0;
+    for (var b=0;b<nBins;b++) {
+      var lo=edges[b], hi=edges[b+1];
+      var sel = [];
+      for (var k=0;k<s.length;k++) {
+        var inBin = b===nBins-1 ? (s[k]>=lo && s[k]<=hi) : (s[k]>=lo && s[k]<hi);
+        if (inBin) sel.push(k);
+      }
+      if (sel.length===0) continue;
+      var meanS = sel.reduce(function(a,k){return a+s[k];},0)/sel.length;
+      var meanT = sel.reduce(function(a,k){return a+t[k];},0)/sel.length;
+      ece += (sel.length/s.length)*Math.abs(meanS-meanT);
+    }
+    out[lab]=ece;
+  }
+  var refLabels = labels.filter(function(l){return l!==focalLabel;});
+  var ref = refLabels.length ? out[refLabels[0]] : NaN;
+  var foc = out[focalLabel];
+  return {metric:'calibration_gap', focal_ece:foc, reference_ece:ref,
+    difference: (isFinite(foc)&&isFinite(ref)) ? foc-ref : NaN};
+}
+
+function ordinalDisparity(yTrue, group, focalLabel, nLevels) {
+  var idx=[];
+  for (var i=0;i<yTrue.length;i++) if(!isNaN(yTrue[i])) idx.push(i);
+  var y = idx.map(function(i){return yTrue[i];}), g = idx.map(function(i){return group[i];});
+  var foc=[], ref=[];
+  for (var i2=0;i2<y.length;i2++) { if (g[i2]===focalLabel) foc.push(y[i2]); else ref.push(y[i2]); }
+  if (!foc.length || !ref.length) return null;
+
+  var meanFoc = foc.reduce(function(a,b){return a+b;},0)/foc.length;
+  var meanRef = ref.reduce(function(a,b){return a+b;},0)/ref.length;
+  var meanDiff = meanFoc-meanRef;
+
+  function variance(arr, mean) {
+    if (arr.length<2) return NaN;
+    return arr.reduce(function(s,v){return s+(v-mean)*(v-mean);},0)/(arr.length-1);
+  }
+  var varFoc = variance(foc, meanFoc), varRef = variance(ref, meanRef);
+  var pooled = NaN;
+  if (foc.length>1 && ref.length>1) pooled = Math.sqrt(((foc.length-1)*varFoc + (ref.length-1)*varRef) / Math.max(foc.length+ref.length-2,1));
+  var stdDiff = (isFinite(pooled) && pooled>0) ? meanDiff/pooled : NaN;
+
+  var combined = foc.concat(ref);
+  var ranks = rankData(combined);
+  var rFoc = ranks.slice(0, foc.length).reduce(function(a,b){return a+b;},0);
+  var m = foc.length, n = ref.length;
+  var ps = (rFoc - m*(m+1)/2) / (m*n);
+
+  var q1 = ps<1 ? ps/(2-ps) : 1.0;
+  var q2 = ps>0 ? 2*ps*ps/(1+ps) : 0.0;
+  var varPs = (ps*(1-ps) + (m-1)*(q1-ps*ps) + (n-1)*(q2-ps*ps)) / (m*n);
+  var psSe;
+  if (varPs>0) psSe = Math.sqrt(varPs);
+  else if (ps===0 || ps===1) psSe = Math.sqrt(1/(4*Math.min(m,n)));
+  else psSe = NaN;
+
+  var crit = normPPF(0.975);
+  var psLo = isFinite(psSe) ? Math.min(Math.max(ps-crit*psSe,0),1) : NaN;
+  var psHi = isFinite(psSe) ? Math.min(Math.max(ps+crit*psSe,0),1) : NaN;
+
+  var levels = nLevels ? Array.from({length:nLevels},function(_,i){return i;}) : Array.from(new Set(y)).sort(function(a,b){return a-b;});
+  var gaps=[];
+  for (var k=0;k<levels.length-1;k++) {
+    var lv = levels[k];
+    var pf = foc.filter(function(v){return v<=lv;}).length/foc.length;
+    var pr = ref.filter(function(v){return v<=lv;}).length/ref.length;
+    gaps.push(Math.abs(pf-pr));
+  }
+  var maxGap = gaps.length ? Math.max.apply(null,gaps) : NaN;
+
+  return {
+    metric:'ordinal_disparity', mean_difference:meanDiff, standardized_difference:stdDiff,
+    probability_superiority:ps, ps_se:psSe, ps_ci_low:psLo, ps_ci_high:psHi,
+    max_cumulative_gap:maxGap, n_focal:foc.length, n_reference:ref.length
+  };
+}
+/* ================= Survey / design-based inference engine (matches difair.survey) ================= */
+function normalizeWeights(weights, group) {
+  var w = weights.slice();
+  if (!group) {
+    var total=0, cnt=0;
+    for (var i=0;i<w.length;i++) if (isFinite(w[i])) { total+=w[i]; cnt++; }
+    if (total<=0) throw new Error('Survey weights sum to zero.');
+    return w.map(function(x){return x*(cnt/total);});
+  }
+  var out = w.slice();
+  var labels = Array.from(new Set(group));
+  for (var li=0; li<labels.length; li++) {
+    var lab = labels[li];
+    var total=0, cnt=0, idxs=[];
+    for (var i2=0;i2<w.length;i2++) if (group[i2]===lab && isFinite(w[i2])) { total+=w[i2]; cnt++; idxs.push(i2); }
+    if (total>0) for (var k=0;k<idxs.length;k++) out[idxs[k]] = w[idxs[k]]*(cnt/total);
+  }
+  return out;
+}
+
+function jackknifeWeights(weights, strata, psu) {
+  var n = weights.length;
+  var p = psu || weights.map(function(_,i){return i;});
+  var stratGroups = new Map();
+  var stratOrder = [];
+  for (var i=0;i<n;i++) {
+    if (!stratGroups.has(strata[i])) { stratGroups.set(strata[i], []); stratOrder.push(strata[i]); }
+    var arr = stratGroups.get(strata[i]);
+    if (arr.indexOf(p[i]) === -1) arr.push(p[i]);
+  }
+  var pairs = [];
+  for (var si=0; si<stratOrder.length; si++) {
+    var s = stratOrder[si];
+    var units = stratGroups.get(s);
+    if (units.length < 2) continue;
+    for (var ui=0; ui<units.length; ui++) pairs.push([s, units[ui]]);
+  }
+  if (pairs.length===0) throw new Error('No stratum contains two or more primary sampling units.');
+  var out = [];
+  for (var pi=0; pi<pairs.length; pi++) {
+    var lab = pairs[pi][0], unit = pairs[pi][1];
+    var row = weights.slice();
+    var inStratumIdx = [];
+    for (var i2=0;i2<n;i2++) if (strata[i2]===lab) inStratumIdx.push(i2);
+    var nUnits = stratGroups.get(lab).length;
+    for (var k2=0;k2<inStratumIdx.length;k2++) {
+      var idx = inStratumIdx[k2];
+      if (p[idx]===unit) row[idx] = 0.0;
+      else row[idx] *= nUnits/(nUnits-1);
+    }
+    out.push(row);
+  }
+  return out;
+}
+
+function quantileSorted(sortedArr, q) {
+  var n = sortedArr.length;
+  if (n===0) return NaN;
+  var pos = q*(n-1);
+  var lo = Math.floor(pos), hi = Math.ceil(pos);
+  if (lo===hi) return sortedArr[lo];
+  return sortedArr[lo] + (sortedArr[hi]-sortedArr[lo])*(pos-lo);
+}
+
+function inferReplicateDesign(replicateWeights, baseWeights, tol) {
+  tol = tol===undefined ? 0.5 : tol;
+  var R = replicateWeights;
+  var nRep = R.length;
+  function result(method, zeroFrac, fay, unchanged, doubled, quantiles) {
+    return {method:method, zero_fraction:zeroFrac, n_replicates:nRep, fay_factor: fay===undefined?null:fay,
+      unchanged_fraction: unchanged===undefined?NaN:unchanged, doubled_fraction: doubled===undefined?NaN:doubled,
+      scale_quantiles: quantiles===undefined?null:quantiles};
+  }
+  if (nRep < 2) return result(null, NaN);
+  var nPersons = R[0].length;
+  var base;
+  if (baseWeights) base = baseWeights.slice();
+  else {
+    base = new Array(nPersons).fill(0);
+    for (var j=0;j<nPersons;j++) { var s=0; for (var i=0;i<nRep;i++) s+=R[i][j]; base[j]=s/nRep; }
+  }
+  var okIdx = [];
+  for (var j2=0;j2<nPersons;j2++) if (isFinite(base[j2]) && base[j2]>0) okIdx.push(j2);
+  if (okIdx.length===0) return result(null, NaN);
+
+  var zeroCount=0, total=0;
+  for (var oi=0; oi<okIdx.length; oi++) {
+    var j3 = okIdx[oi];
+    for (var i2=0;i2<nRep;i2++) { total++; if (R[i2][j3]===0) zeroCount++; }
+  }
+  var zeroFrac = zeroCount/total;
+
+  var unchangedCount=0, doubledCount=0;
+  var nonzero = [];
+  for (var oi2=0; oi2<okIdx.length; oi2++) {
+    var j4 = okIdx[oi2];
+    for (var i3=0;i3<nRep;i3++) {
+      var sc = R[i3][j4]/base[j4];
+      if (Math.abs(sc-1.0) < 1e-8) unchangedCount++;
+      if (Math.abs(sc-2.0) < 1e-3*2.0) doubledCount++;
+      if (sc>0) nonzero.push(sc);
+    }
+  }
+  var unchanged = unchangedCount/total;
+  var doubled = doubledCount/total;
+  nonzero.sort(function(a,b){return a-b;});
+  var quant = nonzero.length ? [
+    Math.round(quantileSorted(nonzero,0.1)*10000)/10000,
+    Math.round(quantileSorted(nonzero,0.5)*10000)/10000,
+    Math.round(quantileSorted(nonzero,0.9)*10000)/10000
+  ] : null;
+
+  if (zeroFrac < 1e-9) {
+    if (nonzero.length) {
+      var hi = quantileSorted(nonzero, 0.9), lo = quantileSorted(nonzero, 0.1);
+      var k3 = Math.min(Math.max((hi-lo)/2.0, 0.0), 1.0);
+      if (k3>0.05 && k3<0.95) return result('fay', 0.0, Math.round(k3*1000)/1000, unchanged, doubled, quant);
+    }
+    return result(null, 0.0, null, unchanged, doubled, quant);
+  }
+  if (unchanged>0.5 && zeroFrac>0 && Math.abs(doubled-zeroFrac) <= 0.5*zeroFrac) {
+    return result('jackknife', zeroFrac, null, unchanged, doubled, quant);
+  }
+  if (Math.abs(zeroFrac-0.5)<=0.15 && nonzero.length) {
+    var med = quantileSorted(nonzero,0.5);
+    if (Math.abs(med-2.0)<0.2) return result('brr', zeroFrac, null, unchanged, doubled, quant);
+  }
+  if (nonzero.length) {
+    var med2 = quantileSorted(nonzero,0.5);
+    if (med2>1.0 && zeroFrac <= 2.0/nRep) return result('jackknife', zeroFrac, null, unchanged, doubled, quant);
+  }
+  return result(null, zeroFrac, null, unchanged, doubled, quant);
+}
+
+function replicateVariance(estimate, replicateEstimates, method, fayFactor, fpc) {
+  fayFactor = fayFactor===undefined ? 0.5 : fayFactor;
+  var rep = replicateEstimates.filter(isFinite);
+  var r = rep.length;
+  if (r<2) return {variance:NaN, se:NaN, n_replicates:r, method:method};
+  var dev = rep.map(function(v){return (v-estimate)*(v-estimate);});
+  var vr;
+  if (method==='jackknife') vr = dev.reduce(function(a,b){return a+b;},0);
+  else if (method==='brr') vr = dev.reduce(function(a,b){return a+b;},0)/r;
+  else if (method==='fay') { var denom=r*(1-fayFactor)*(1-fayFactor); vr = denom>0? dev.reduce(function(a,b){return a+b;},0)/denom : NaN; }
+  else throw new Error("method must be 'jackknife','brr','fay'");
+  if (fpc!==undefined && fpc!==null) vr *= (1-fpc);
+  return {variance:vr, se: (isFinite(vr)&&vr>=0)?Math.sqrt(vr):NaN, n_replicates:r, method:method, fpc: fpc===undefined?null:fpc};
+}
+
+function combinePlausibleValues(estimates, variances) {
+  var est = estimates.filter(isFinite);
+  var m = est.length;
+  if (m===0) return {estimate:NaN, variance:NaN, se:NaN, within:NaN, between:NaN, df:NaN, fmi:NaN, n_values:0};
+  var point = est.reduce(function(a,b){return a+b;},0)/m;
+  var between = 0;
+  if (m>1) { var v = est.reduce(function(s,x){return s+(x-point)*(x-point);},0)/(m-1); between = v; }
+  var within = 0;
+  if (variances) {
+    var vs = variances.filter(isFinite);
+    within = vs.length ? vs.reduce(function(a,b){return a+b;},0)/vs.length : 0;
+  }
+  var total = m>1 ? within + (1+1/m)*between : within;
+  var lam=0, df=Infinity;
+  if (total>0 && m>1 && between>0) {
+    lam = (1+1/m)*between/total;
+    df = lam>0 ? (m-1)/(lam*lam) : Infinity;
+  }
+  return {estimate:point, variance:total, se: total>=0?Math.sqrt(total):NaN, within:within, between:between, df:df, fmi:lam, n_values:m};
+}
+
+function poolEstimates(estimates, standardErrors, method) {
+  method = method || 'fixed';
+  var pairs = [];
+  for (var i=0;i<estimates.length;i++) {
+    if (isFinite(estimates[i]) && isFinite(standardErrors[i]) && standardErrors[i]>0) pairs.push([estimates[i], standardErrors[i]]);
+  }
+  var k = pairs.length;
+  var crit = normPPF(0.975);
+  if (k===0) return {estimate:NaN, se:NaN, ci_low:NaN, ci_high:NaN, q:NaN, i_squared:NaN, tau_squared:NaN, n_analyses:0};
+  if (k===1) {
+    var e=pairs[0][0], s=pairs[0][1];
+    return {estimate:e, se:s, ci_low:e-crit*s, ci_high:e+crit*s, q:0, i_squared:0, tau_squared:0, n_analyses:1};
+  }
+  var est = pairs.map(function(p){return p[0];}), se = pairs.map(function(p){return p[1];});
+  var w = se.map(function(s){return 1/(s*s);});
+  var sumW = w.reduce(function(a,b){return a+b;},0);
+  var fixed = w.reduce(function(a,wi,i){return a+wi*est[i];},0)/sumW;
+  var q = w.reduce(function(a,wi,i){return a+wi*Math.pow(est[i]-fixed,2);},0);
+  var df = k-1;
+  var i2 = q>0 ? Math.max(0, (q-df)/q) : 0;
+  var tau2=0;
+  if (method==='random') {
+    var c = sumW - w.reduce(function(a,wi){return a+wi*wi;},0)/sumW;
+    tau2 = c>0 ? Math.max(0,(q-df)/c) : 0;
+    w = se.map(function(s){return 1/(s*s+tau2);});
+  } else if (method!=='fixed') throw new Error("method must be 'fixed' or 'random'");
+  var sumW2 = w.reduce(function(a,b){return a+b;},0);
+  var point = w.reduce(function(a,wi,i){return a+wi*est[i];},0)/sumW2;
+  var pooledSe = Math.sqrt(1/sumW2);
+  return {estimate:point, se:pooledSe, ci_low:point-crit*pooledSe, ci_high:point+crit*pooledSe, q:q, i_squared:i2, tau_squared:tau2, n_analyses:k};
+}
+
+// Orchestrator: weighted + design-based DIF for one item (dichotomous MH under weights + jackknife replicates)
+function surveyDifItem(itemCol, isFocal, matching, weights, replicateWeightsForItem, method, alpha) {
+  // full-sample weighted MH
+  var full = computeMHWeighted(itemCol, isFocal, matching, weights);
+  var est = full.delta_mh;
+  if (!replicateWeightsForItem || replicateWeightsForItem.length===0) {
+    return {estimate:est, se:NaN, ci_low:NaN, ci_high:NaN, n_replicates:0};
+  }
+  var repEst = replicateWeightsForItem.map(function(rw){
+    return computeMHWeighted(itemCol, isFocal, matching, rw).delta_mh;
+  });
+  var rv = replicateVariance(est, repEst, method || 'jackknife');
+  var crit = normPPF(1-(alpha||0.05)/2);
+  var se = rv.se;
+  return {
+    estimate: est, se: se,
+    ci_low: isFinite(se) ? est-crit*se : NaN,
+    ci_high: isFinite(se) ? est+crit*se : NaN,
+    n_replicates: rv.n_replicates
+  };
+}
+
+// Weighted MH: same as computeMH but cells accumulate weights instead of counts
+function computeMHWeighted(itemCol, isFocal, matching, weights) {
+  var strata = new Map();
+  for (var i = 0; i < itemCol.length; i++) {
+    var u = itemCol[i];
+    if (u === null || u === undefined || isNaN(u)) continue;
+    var s = matching[i];
+    if (s === null || s === undefined || isNaN(s)) continue;
+    var wgt = weights ? weights[i] : 1;
+    if (!wgt || wgt<=0 || isNaN(wgt)) continue;
+    if (!strata.has(s)) strata.set(s, {a:0,b:0,c:0,d:0});
+    var cell = strata.get(s);
+    if (!isFocal[i]) { if (u===1) cell.a+=wgt; else cell.b+=wgt; }
+    else { if (u===1) cell.c+=wgt; else cell.d+=wgt; }
+  }
+  var sumR=0, sumS=0, sumA=0, sumE=0, sumV=0, nStrata=0;
+  strata.forEach(function (cell) {
+    var a=cell.a, b=cell.b, c=cell.c, d=cell.d;
+    var T = a+b+c+d;
+    if (T===0) return;
+    var nr = a+b, nf = c+d, m1 = a+c, m0 = b+d;
+    if (nr===0 || nf===0) return;
+    nStrata++;
+    var R = (a*d)/T, S = (b*c)/T;
+    sumR += R; sumS += S;
+    sumA += a;
+    var E = (nr*m1)/T;
+    sumE += E;
+    var V = T>1 ? (nr*nf*m1*m0)/(T*T*(T-1)) : 0;
+    sumV += V;
+  });
+  if (sumS<=0 || sumR<=0) return {alpha_mh:NaN, delta_mh:NaN, chi2:NaN, p_value:NaN, n_strata:nStrata};
+  var alpha_mh = sumR/sumS;
+  var delta_mh = -2.35*Math.log(alpha_mh);
+  var num = Math.abs(sumA - sumE) - 0.5;
+  if (num < 0) num = 0;
+  var chi2 = sumV>0 ? (num*num)/sumV : NaN;
+  var p_value = isFinite(chi2) ? chi2SF(chi2,1) : NaN;
+  return {alpha_mh:alpha_mh, delta_mh:delta_mh, chi2:chi2, p_value:p_value, n_strata:nStrata};
+}
+/* ================= Pipeline Shapley attribution (matches difair.pipeline) ================= */
+function buildScore(responsesMatrix, itemNames, dropItems) {
+  var dropSet = new Set(dropItems);
+  var keepIdx = [];
+  for (var j=0;j<itemNames.length;j++) if (!dropSet.has(itemNames[j])) keepIdx.push(j);
+  if (keepIdx.length===0) throw new Error('The item mitigation would remove every item from the score.');
+  return responsesMatrix.map(function(row) { return keepIdx.reduce(function(s,j){return s+row[j];}, 0); });
+}
+
+function fitPredict(score, proxy, y, trainMask, group, useProxy, balance, lambda) {
+  lambda = lambda===undefined ? 1.0 : lambda;
+  var n = score.length;
+  var X = useProxy ? score.map(function(s,i){return [s, proxy[i]];}) : score.map(function(s){return [s];});
+  var trainIdx = [];
+  for (var i=0;i<n;i++) if (trainMask[i]) trainIdx.push(i);
+  var ytr = trainIdx.map(function(i){return y[i];});
+  var uniqueY = new Set(ytr);
+  if (uniqueY.size < 2) {
+    var meanY = ytr.length ? ytr.reduce(function(a,b){return a+b;},0)/ytr.length : 0.5;
+    return new Array(n).fill(meanY);
+  }
+  var w = null;
+  if (balance) {
+    var gtr = trainIdx.map(function(i){return group[i];});
+    var counts = new Map();
+    for (var gi=0; gi<gtr.length; gi++) counts.set(gtr[gi], (counts.get(gtr[gi])||0)+1);
+    var nGroups = counts.size;
+    w = gtr.map(function(g){ return gtr.length / (nGroups * counts.get(g)); });
+  }
+  var p = X[0].length;
+  var Xtr = trainIdx.map(function(i){return X[i];});
+  var stats = [];
+  for (var j=0;j<p;j++) {
+    var col = Xtr.map(function(row){return row[j];});
+    var ms = meanStd(col);
+    var mu=ms[0], sd=ms[1];
+    if (sd===0) sd=1;
+    stats.push([mu,sd]);
+  }
+  var XtrS = Xtr.map(function(row){ return row.map(function(v,j){return (v-stats[j][0])/stats[j][1];}); });
+  var XtrDesign = XtrS.map(function(row){ return [1].concat(row); });
+  var betaRes = fitRidgeLogitIRLS(XtrDesign, ytr, lambda, w, {maxIter:200, tol:1e-10});
+  var beta = betaRes.beta;
+  var XS = X.map(function(row){ return row.map(function(v,j){return (v-stats[j][0])/stats[j][1];}); });
+  var XDesign = XS.map(function(row){ return [1].concat(row); });
+  return XDesign.map(function(row){ return sigmoid(row.reduce(function(s,x,j){return s+x*beta[j];},0)); });
+}
+
+function thresholdDecision(risk, group, rate, groupSpecific) {
+  var n = risk.length;
+  if (!groupSpecific) {
+    var cut = quantileArr(risk, 1-rate);
+    return risk.map(function(r){ return r>=cut ? 1 : 0; });
+  }
+  var pred = new Array(n).fill(0);
+  var labels = Array.from(new Set(group));
+  for (var li=0; li<labels.length; li++) {
+    var lab = labels[li];
+    var idx = [];
+    for (var i=0;i<n;i++) if (group[i]===lab) idx.push(i);
+    if (idx.length===0) continue;
+    var riskSub = idx.map(function(i){return risk[i];});
+    var cut2 = quantileArr(riskSub, 1-rate);
+    for (var k=0;k<idx.length;k++) pred[idx[k]] = risk[idx[k]]>=cut2 ? 1 : 0;
+  }
+  return pred;
+}
+
+function combinationsArr(arr, size) {
+  var results = [];
+  function helper(start, combo) {
+    if (combo.length===size) { results.push(combo.slice()); return; }
+    for (var i=start;i<arr.length;i++) { combo.push(arr[i]); helper(i+1, combo); combo.pop(); }
+  }
+  helper(0, []);
+  return results;
+}
+function factorialN(n) { var r=1; for (var i=2;i<=n;i++) r*=i; return r; }
+
+function attributeStages(responsesMatrix, itemNames, group, focalLabel, outcome, difItems, proxy, trainMask, trainOutcome, stagesIn, metric, selectionRate, lambda) {
+  metric = metric || 'demographic_parity';
+  selectionRate = selectionRate===undefined ? 0.4 : selectionRate;
+  lambda = lambda===undefined ? 1.0 : lambda;
+  var stages = stagesIn.slice();
+
+  if (!proxy) { proxy = group.map(function(){return 0;}); stages = stages.filter(function(s){return s!=='model';}); }
+  if (!trainMask) { trainMask = group.map(function(){return true;}); stages = stages.filter(function(s){return s!=='sampling';}); }
+  if (!trainOutcome) trainOutcome = outcome;
+
+  var cache = new Map();
+  function v(subsetArr) {
+    var key = subsetArr.slice().sort().join(',');
+    if (cache.has(key)) return cache.get(key);
+    var subsetSet = new Set(subsetArr);
+    var score = buildScore(responsesMatrix, itemNames, subsetSet.has('item') ? difItems : []);
+    var risk = fitPredict(score, proxy, trainOutcome, trainMask, group, !subsetSet.has('model'), subsetSet.has('sampling'), lambda);
+    var pred = thresholdDecision(risk, group, selectionRate, subsetSet.has('decision'));
+    var val;
+    if (metric==='demographic_parity') val = demographicParity(pred, group, focalLabel).difference;
+    else val = equalOpportunity(outcome, pred, group, focalLabel).tpr_difference;
+    val = isFinite(val) ? Math.abs(val) : NaN;
+    cache.set(key, val);
+    return val;
+  }
+
+  var k = stages.length;
+  var shapley = {};
+  for (var si=0; si<stages.length; si++) shapley[stages[si]] = 0;
+  for (var sti=0; sti<stages.length; sti++) {
+    var stage = stages[sti];
+    var others = stages.filter(function(s){return s!==stage;});
+    for (var size=0; size<=others.length; size++) {
+      var weight = factorialN(size)*factorialN(k-size-1)/factorialN(k);
+      var combos = combinationsArr(others, size);
+      for (var ci=0; ci<combos.length; ci++) {
+        var combo = combos[ci];
+        shapley[stage] += weight * (v(combo) - v(combo.concat([stage])));
+      }
+    }
+  }
+
+  return {
+    shapley: shapley,
+    baseline_gap: v([]),
+    residual_gap: v(stages),
+    coalition_values: Object.fromEntries(cache)
+  };
+}
+/* ================= Demo data generators (run entirely in-browser) ================= */
+function randNormal() {
+  var u=0,v=0;
+  while (u===0) u=Math.random();
+  while (v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+function buildDemoDichotomousCSV() {
+  var nRef=260, nFoc=260, nItems=18;
+  var difItems=[2,6,10,14];
+  var b=[];
+  for (var j=0;j<nItems;j++) b.push(Math.random()*3-1.5);
+  var header=['student_id','group'];
+  for (var j2=0;j2<nItems;j2++) header.push('item_'+String(j2+1).padStart(2,'0'));
+  var rows=[header.join(',')];
+  var idc=1;
+  function makeRows(n, label, isFocalGroup) {
+    for (var p=0;p<n;p++) {
+      var theta = randNormal();
+      var vals=[];
+      for (var j=0;j<nItems;j++) {
+        var bj = b[j] + ((isFocalGroup && difItems.indexOf(j)!==-1) ? 1.1 : 0);
+        var prob = 1/(1+Math.exp(-(theta-bj)));
+        vals.push(Math.random()<prob ? 1 : 0);
+      }
+      rows.push(['S'+String(idc++).padStart(4,'0'), label].concat(vals).join(','));
+    }
+  }
+  makeRows(nRef, 'reference', false);
+  makeRows(nFoc, 'focal', true);
+  return rows.join('\n');
+}
+
+function buildDemoPolyCSV() {
+  var nRef=260, nFoc=260, nItems=10, nCatLevels=4; // categories 0..3
+  var difItems=[1,4];
+  var b=[];
+  for (var j=0;j<nItems;j++) b.push(Math.random()*2-1);
+  var header=['student_id','group'];
+  for (var j2=0;j2<nItems;j2++) header.push('item_'+String(j2+1).padStart(2,'0'));
+  var rows=[header.join(',')];
+  var idc=1;
+  function makeRows(n,label,isFocalGroup) {
+    for (var p=0;p<n;p++) {
+      var theta = randNormal();
+      var vals=[];
+      for (var j=0;j<nItems;j++) {
+        var shift = (isFocalGroup && difItems.indexOf(j)!==-1) ? 1.0 : 0;
+        // simple graded response: cumulative logistic over 3 thresholds
+        var thr = [b[j]-0.8, b[j]+0.1, b[j]+1.0].map(function(t){return t+shift;});
+        var cum = thr.map(function(t){ return 1/(1+Math.exp(-(t-theta))); }); // P(Y<=k)
+        var u = Math.random();
+        var cat = 0;
+        for (var c=0;c<cum.length;c++) { if (u > cum[c]) cat = c+1; }
+        vals.push(cat);
+      }
+      rows.push(['S'+String(idc++).padStart(4,'0'), label].concat(vals).join(','));
+    }
+  }
+  makeRows(nRef,'reference',false);
+  makeRows(nFoc,'focal',true);
+  return rows.join('\n');
+}
+
+function buildDemoFairnessCSV() {
+  var n = 700;
+  var header = ['person_id','group','y_pred','y_true','y_score','ordinal_outcome'];
+  var rows = [header.join(',')];
+  for (var i=0;i<n;i++) {
+    var isFocal = i >= n/2;
+    var label = isFocal ? 'focal' : 'reference';
+    var trueRisk = Math.random();
+    var yTrue = Math.random() < 0.4 ? 1 : 0;
+    var score = Math.min(Math.max(trueRisk + (isFocal ? -0.12 : 0) + randNormal()*0.08, 0), 1);
+    var yPred = score > 0.55 ? 1 : 0;
+    var ordinal = Math.min(4, Math.max(0, Math.round(score*4 + (isFocal?-0.3:0) + randNormal()*0.5)));
+    rows.push(['P'+String(i+1).padStart(4,'0'), label, yPred, yTrue, score.toFixed(4), ordinal].join(','));
+  }
+  return rows.join('\n');
+}
+
+function buildDemoSurveyCSV() {
+  var nStrata = 8, psuPerStratum = 6, studentsPerPsu = 10;
+  var nItems = 8;
+  var difItems = [1,4];
+  var b = [];
+  for (var j=0;j<nItems;j++) b.push(Math.random()*2-1);
+  var header = ['student_id','group','weight','stratum','psu'];
+  for (var j2=0;j2<nItems;j2++) header.push('item_'+String(j2+1).padStart(2,'0'));
+  var rows = [header.join(',')];
+  var idc=1;
+  for (var st=0; st<nStrata; st++) {
+    for (var ps=0; ps<psuPerStratum; ps++) {
+      // cluster-level random effect
+      var clusterEffect = randNormal()*0.4;
+      for (var s=0; s<studentsPerPsu; s++) {
+        var isFocal = Math.random() < 0.5;
+        var label = isFocal ? 'focal' : 'reference';
+        var theta = randNormal() + clusterEffect;
+        var vals = [];
+        for (var j=0;j<nItems;j++) {
+          var shift = (isFocal && difItems.indexOf(j)!==-1) ? 1.0 : 0;
+          var prob = 1/(1+Math.exp(-(theta-(b[j]+shift))));
+          vals.push(Math.random()<prob?1:0);
+        }
+        rows.push(['S'+String(idc++).padStart(4,'0'), label, '1.0', st, st+'-'+ps].concat(vals).join(','));
+      }
+    }
+  }
+  return rows.join('\n');
+}
+
+function buildDemoPoolCSV() {
+  var header = ['analysis','estimate','se'];
+  var rows = [header.join(',')];
+  var names = ['Country A','Country B','Country C','Country D','Country E'];
+  var trueEffect = -0.85;
+  for (var i=0;i<names.length;i++) {
+    var se = 0.12 + Math.random()*0.10;
+    var est = trueEffect + randNormal()*se*1.1;
+    rows.push([names[i], est.toFixed(4), se.toFixed(4)].join(','));
+  }
+  return rows.join('\n');
+}
+
+function buildDemoPipelineCSV() {
+  var nRef=400, nFoc=400, nItems=20;
+  var difItems=[0,1,2,3];
+  var b=[];
+  for (var j=0;j<nItems;j++) b.push(Math.random()*2-1);
+  var header=['person_id','group'];
+  for (var j2=0;j2<nItems;j2++) header.push('item_'+String(j2+1).padStart(2,'0'));
+  header.push('outcome','outcome_observed','proxy','train_mask');
+  var rows=[header.join(',')];
+  var idc=1;
+  function makeRows(n,label,isFocalGroup) {
+    for (var p=0;p<n;p++) {
+      var theta = randNormal();
+      var vals=[];
+      for (var j=0;j<nItems;j++) {
+        var bj = b[j] + ((isFocalGroup && difItems.indexOf(j)!==-1) ? 0.9 : 0);
+        var prob = 1/(1+Math.exp(-(theta-bj)));
+        vals.push(Math.random()<prob?1:0);
+      }
+      var outcome = Math.random() < (1/(1+Math.exp(-(theta-0.2)))) ? 1 : 0;
+      var proxy = 0.85*(isFocalGroup?1:0) + randNormal()*0.3;
+      var trainIn = Math.random() < (isFocalGroup ? 0.5 : 0.95) ? 1 : 0;
+      var outcomeObserved = outcome;
+      if (isFocalGroup && outcome===1 && Math.random()<0.35) outcomeObserved = 0;
+      rows.push(['P'+String(idc++).padStart(4,'0'), label].concat(vals).concat([outcome, outcomeObserved, proxy.toFixed(4), trainIn]).join(','));
+    }
+  }
+  makeRows(nRef,'reference',false);
+  makeRows(nFoc,'focal',true);
+  return rows.join('\n');
+}
+/* ================= Generic CSV parsing utilities ================= */
+function parseCSVLine(line) {
+  var result = [];
+  var cur = '';
+  var inQuotes = false;
+  for (var i = 0; i < line.length; i++) {
+    var ch = line[i];
+    if (inQuotes) {
+      if (ch === '"') { if (line[i+1] === '"') { cur += '"'; i++; } else inQuotes = false; }
+      else cur += ch;
+    } else {
+      if (ch === '"') inQuotes = true;
+      else if (ch === ',') { result.push(cur); cur = ''; }
+      else cur += ch;
+    }
+  }
+  result.push(cur);
+  return result;
+}
+
+function parseCSVRaw(text) {
+  if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
+  var lines = text.split(/\r\n|\r|\n/).filter(function (l) { return l.trim().length > 0; });
+  if (lines.length < 2) throw {code:'EMPTY', message: T('err_empty')};
+  var header = parseCSVLine(lines[0]).map(function (h) { return h.trim(); });
+  var rawRows = [];
+  var skipped = 0;
+  for (var i = 1; i < lines.length; i++) {
+    var fields = parseCSVLine(lines[i]);
+    if (fields.length !== header.length) { skipped++; continue; }
+    rawRows.push(fields);
+  }
+  if (rawRows.length === 0) throw {code:'EMPTY', message: T('err_no_valid_rows')};
+  return {header: header, rows: rawRows, skipped: skipped};
+}
+
+function findColIdx(header, name) {
+  var lname = name.toLowerCase();
+  return header.findIndex(function(h){ return h.toLowerCase() === lname; });
+}
+
+function detectItemColumns(header, rows, excludeIdx, requireBinary) {
+  var candidateIdx = [];
+  for (var c = 0; c < header.length; c++) if (excludeIdx.indexOf(c) === -1) candidateIdx.push(c);
+  return candidateIdx.filter(function (c) {
+    var sawAny = false;
+    var maxVal = -Infinity;
+    for (var r = 0; r < rows.length; r++) {
+      var v = rows[r][c].trim();
+      if (v === '') continue;
+      var n = Number(v);
+      if (!isFinite(n) || !Number.isInteger(n) || n < 0) return false;
+      if (requireBinary && n !== 0 && n !== 1) return false;
+      maxVal = Math.max(maxVal, n);
+      sawAny = true;
+    }
+    return sawAny;
+  });
+}
+
+function getDistinctGroupValues(groupRaw) {
+  var seen = new Map();
+  var order = [];
+  for (var i=0;i<groupRaw.length;i++) {
+    var g = groupRaw[i];
+    if (g === '') continue;
+    if (!seen.has(g)) { seen.set(g, true); order.push(g); }
+  }
+  return order;
+}
+
+function downloadText(filename, text, mime) {
+  var blob = new Blob([text], {type: mime || 'text/csv;charset=utf-8;'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+function fmtNum(x, digits) {
+  if (x === null || x === undefined || isNaN(x) || !isFinite(x)) return '\u2014';
+  return x.toFixed(digits);
+}
+function fmtP(p) {
+  if (p === null || p === undefined || isNaN(p)) return '\u2014';
+  if (p < 0.0001) return p.toExponential(2);
+  return p.toFixed(4);
+}
+/* ================= i18n dictionary ================= */
+var I18N = {
+en: {
+  doc_title: "DIFAIR Studio",
+  hero_eyebrow: "DIF & Algorithmic Fairness Audit Suite",
+  hero_title: "DIFAIR Studio",
+  hero_p1: "A full browser implementation of the DIFair statistical toolkit: item-level DIF for dichotomous and polytomous items, model-level fairness metrics, survey design-based inference, and Shapley pipeline attribution.",
+  hero_p2: "No installation needed. Upload data in the template format for each tool below.",
+  privacy_note: "Runs entirely in your browser \u00b7 your data is never uploaded to any server",
+  tab_dich: "Dichotomous DIF",
+  tab_poly: "Polytomous DIF",
+  tab_fair: "Fairness Metrics",
+  tab_survey: "Survey Design",
+  tab_pipeline: "Pipeline Attribution",
+
+  step_prepare: "Prepare your data",
+  step_configure: "Configure the analysis",
+  step_results: "Results",
+  btn_template: "\u2193 Download data template (CSV)",
+  btn_demo: "\u25B7 Load sample data",
+  btn_download_results: "\u2193 Download results (CSV)",
+  dz_click: "Click to choose a file",
+  dz_drag: ", or drag a CSV here",
+  opt_select: "Select\u2026",
+  lbl_focal: "Focal group",
+  lbl_matching: "Matching criterion",
+  lbl_matching_val: "Total score (sum of item responses)",
+  focal_sub: "Choose the group you want to focus on (the focal group). DIF statistics are directional, so the tool won't guess for you.",
+  purify_lbl: "Enable purification",
+  purify_desc: "\u2014 iteratively removes flagged items from the matching score so DIF items don't contaminate the matching criterion, for up to 5 passes until the flagged set stabilizes.",
+  th_item: "Item",
+
+  d_intro: "Dichotomous (right/wrong) item DIF. Runs Mantel\u2013Haenszel, standardization, Breslow\u2013Day, and Swaminathan\u2013Rogers logistic regression, matching <code>difair.dif</code>.",
+  d_prepare_sub: "One column of group labels, plus one column per item (1 = correct, 0 = incorrect).",
+  d_dz_hint: ".csv \u00b7 needs a group column + one or more 0/1 item columns",
+  d_lbl_methods: "Methods to run",
+  d_m_std_lbl: "Standardization",
+  d_m_log_lbl: "Logistic regression",
+  d_btnRun: "\u25B6 Run DIF detection",
+
+  p_intro: "Rating-scale / partial-credit items with 3 or more ordered categories. Runs generalized Mantel\u2013Haenszel and proportional-odds ordinal logistic regression, matching <code>difair.poly</code>.",
+  p_prepare_sub: "One column of group labels, plus one column per item holding ordered integer category codes (e.g. 0\u20133 for a 4-point scale).",
+  p_dz_hint: ".csv \u00b7 needs a group column + one or more ordered-category item columns",
+  p_m_gmh_lbl: "Generalized Mantel\u2013Haenszel",
+  p_m_ord_lbl: "Ordinal logistic regression",
+  p_purify_desc: "\u2014 iteratively removes items flagged by the generalized Mantel\u2013Haenszel SMD (class B/C) from the matching score, for up to 5 passes.",
+  p_slow_note: "Ordinal logistic regression fits a small nonlinear model per item and can take a few seconds for larger files.",
+  p_btnRun: "\u25B6 Run DIF detection",
+
+  f_intro: "Model-level fairness metrics on a downstream decision: demographic parity, equalized odds, equal opportunity, predictive parity, calibration gap, and ordinal disparity, matching <code>difair.fairness</code>.",
+  f_prepare_sub: "One row per person: a group column, a binary decision (y_pred), and optionally the true outcome (y_true), a predicted probability (y_score), and/or an ordinal outcome.",
+  f_dz_hint: ".csv \u00b7 needs group + y_pred; y_true, y_score, ordinal_outcome are optional",
+  f_btnRun: "\u25B6 Run fairness metrics",
+  f_th_metric: "Metric", f_th_value: "Value", f_th_detail: "Detail",
+  f_ordinal_title: "Ordinal disparity",
+
+  s_intro: "Design-based inference for large-scale, clustered assessments: paired-jackknife replicate weights built from your sampling design, and pooling of independent estimates, matching <code>difair.survey</code>.",
+  s_step_prepare: "Prepare your design-weighted data",
+  s_prepare_sub: "Group + dichotomous item columns, plus a sampling weight, a stratum ID and a primary sampling unit (PSU, e.g. school) ID per respondent.",
+  s_dz_hint: ".csv \u00b7 needs group, weight, stratum, psu + 0/1 item columns",
+  s_lbl_method: "Replicate variance estimator",
+  s_lbl_method_val: "Jackknife (paired, built from stratum + PSU)",
+  s_btnRun: "\u25B6 Run design-based DIF",
+  s_th_reps: "Replicates",
+  s_bonus_tag: "EXTRA",
+  s_pool_title: "Pool estimates across analyses",
+  s_pool_sub: "Combine independent DIF or disparity estimates \u2014 e.g. from several countries, cohorts, or booklets \u2014 by inverse-variance weighting.",
+  s_pool_dz_hint: ".csv \u00b7 needs analysis, estimate, se columns",
+  s_pool_method_lbl: "Pooling method",
+  s_pool_fixed: "Fixed effect (inverse-variance)",
+  s_pool_random: "Random effects (DerSimonian\u2013Laird)",
+  s_pool_btnRun: "\u25B6 Pool estimates",
+
+  pl_intro: "Attribute an end-to-end decision disparity to the pipeline stage that produced it \u2014 item, sampling, or model \u2014 by exact Shapley value, matching <code>difair.pipeline</code>.",
+  pl_prepare_sub: "Group + dichotomous item columns, a true outcome, and optionally a proxy feature and a training-sample flag.",
+  pl_dz_hint: ".csv \u00b7 needs group, outcome + 0/1 item columns; proxy, train_mask, train_outcome are optional",
+  pl_lbl_metric: "Disparity metric",
+  pl_metric_dp: "Demographic parity",
+  pl_metric_eo: "Equal opportunity",
+  pl_lbl_rate: "Selection rate (share flagged)",
+  pl_lbl_stages: "Pipeline stages to include",
+  pl_stage_item: "item", pl_stage_item_desc: "(drop DIF-flagged items from the score)",
+  pl_stage_sampling: "sampling", pl_stage_sampling_desc: "(reweight training sample by group)",
+  pl_stage_model: "model", pl_stage_model_desc: "(refit without the proxy feature)",
+  pl_stage_note: "The sampling and model stages need a train_mask and a proxy column respectively \u2014 they're disabled until those columns are detected.",
+  pl_btnRun: "\u25B6 Run attribution",
+  pl_th_stage: "Stage", pl_th_shapley: "Shapley value", pl_th_share: "Share of explained gap",
+
+  foot_method: "Method & limitations",
+  foot_li1: "Every procedure here is a from-scratch JavaScript port of the corresponding function in the DIFair Python package, checked against its actual output on test data. Mantel\u2013Haenszel, standardization, Breslow\u2013Day, generalized Mantel\u2013Haenszel, all fairness metrics, and the survey/jackknife functions match to 5+ decimal places. Logistic-regression-based procedures (item-level logistic DIF, ordinal logistic DIF, pipeline attribution) fit their own solver rather than statsmodels/scikit-learn's, so results are very close but not bit-identical, especially for pipeline attribution under sample reweighting.",
+  foot_li2: "Being flagged for DIF or a fairness gap statistically doesn't automatically mean \"unfair\" \u2014 flagged items and gaps need expert content and context review.",
+  foot_li3: "All tools here support two-group comparisons only, matching the underlying package. With a small sample (fewer than roughly 50 people), statistical power is limited and results should be treated as indicative only.",
+
+  err_empty: "No usable data rows found in this file.",
+  err_no_valid_rows: "No valid data rows were parsed. Check that every row has the same number of columns as the header.",
+  err_no_group: 'No column named "group" was found. Follow the template and include a column of group labels (e.g. reference / focal).',
+  err_no_items: "No item columns were detected. Check the template format \u2014 non-numeric or out-of-range columns (like an ID) are ignored automatically.",
+  err_one_group: "Only {n} value(s) found in the group column ({vals}). Exactly two distinct groups are needed for a comparison.",
+  err_many_groups: "Found {n} distinct values in the group column ({vals}). This tool only supports two-group comparisons \u2014 filter your data down to two groups first.",
+  err_read_fail: "Could not read the file. Make sure it isn't corrupted, then try again.",
+  err_unrecognized: "This file format wasn't recognized. Check it against the template.",
+  err_title: "Couldn't read this data",
+  err_missing_cols: "Missing required column(s): {cols}. Check the template format.",
+  loaded_label: "\u2713 Loaded:",
+  respondents_label: "respondents",
+  items_label: "items",
+  skipped_rows: " (skipped {n} row(s) with mismatched columns)",
+  small_sample_warn: "Small sample ({n} people) \u2014 statistical power is limited, so treat results as indicative only.",
+  group_col_label: "Group column:",
+  two_groups_label: "Two groups detected:",
+  item_cols_label: "Item columns:",
+  flagged_summary: "With <b>{focal}</b> as the focal group: <span class=\"flagged-count\">{n}</span> of {total} items flagged.",
+  no_flagged_col: "This procedure doesn't provide a flag column; showing raw statistics.",
+  favors_reference: "reference group", favors_focal: "focal group", favors_neither: "neither", favors_undetermined: "\u2014",
+  demo_dich_label: "Sample data (generated in-browser, 18 items \u00b7 4 with planted DIF)",
+  demo_poly_label: "Sample data (generated in-browser, 10 rating-scale items \u00b7 2 with planted DIF)",
+  demo_fair_label: "Sample data (generated in-browser, 700 people)",
+  demo_survey_label: "Sample data (generated in-browser, clustered design \u00b7 8 strata \u00d7 6 schools)",
+  demo_pool_label: "Sample data (generated in-browser, 5 country-level analyses)",
+  demo_pipeline_label: "Sample data (generated in-browser, 3 planted pipeline artefacts)",
+  baseline_gap_label: "Baseline gap",
+  residual_gap_label: "Residual gap",
+  explained_label: "Explained",
+  n_replicates_label: "Replicates built",
+  stage_disabled_note: "Needs a {col} column in your data \u2014 not detected, so this stage is unavailable.",
+},
+};
+
+var CUR_LANG = 'en';
+function T(key, vars) {
+  var s = (I18N[CUR_LANG] && I18N[CUR_LANG][key]) || (I18N.en && I18N.en[key]) || key;
+  if (vars) for (var k in vars) s = s.split('{'+k+'}').join(vars[k]);
+  return s;
+}
+function applyLanguage(lang) {
+  CUR_LANG = lang;
+  document.documentElement.lang = 'en';
+  var nodes = document.querySelectorAll('[data-i18n]');
+  for (var i=0;i<nodes.length;i++) {
+    var key = nodes[i].getAttribute('data-i18n');
+    var val = T(key);
+    nodes[i].innerHTML = val;
+  }
+  if (typeof onLanguageChanged === 'function') onLanguageChanged();
+}
+/* ================= Tab: Dichotomous DIF wiring ================= */
+var TEMPLATE_DICH = 'student_id,group,item_01,item_02,item_03,item_04,item_05,item_06\n'+
+'S0001,reference,1,1,0,1,1,0\nS0002,reference,1,0,0,1,0,0\nS0003,reference,0,1,1,1,1,1\n'+
+'S0004,reference,1,1,1,0,1,0\nS0005,focal,1,0,0,0,1,0\nS0006,focal,0,0,0,1,0,0\n'+
+'S0007,focal,1,1,0,1,0,0\nS0008,focal,0,1,0,0,1,1\n';
+
+var stateD = { itemNames:[], matrix:[], groupRaw:[], groupValues:[], skippedRows:0, lastResults:null };
+
+function parseDichotomousCSV(text) {
+  var parsed = parseCSVRaw(text);
+  var header = parsed.header, rows = parsed.rows;
+  var groupIdx = findColIdx(header, 'group');
+  if (groupIdx === -1) throw {message: T('err_no_group')};
+  var itemIdx = detectItemColumns(header, rows, [groupIdx], true);
+  if (itemIdx.length === 0) throw {message: T('err_no_items')};
+  var itemNames = itemIdx.map(function(c){return header[c];});
+  var groupRaw = rows.map(function(r){return r[groupIdx].trim();});
+  var groupValues = getDistinctGroupValues(groupRaw);
+  if (groupValues.length < 2) throw {message: T('err_one_group', {n:groupValues.length, vals:groupValues.join(', ')})};
+  if (groupValues.length > 2) throw {message: T('err_many_groups', {n:groupValues.length, vals:groupValues.slice(0,6).join(', ')})};
+  var matrix = rows.map(function(r){ return itemIdx.map(function(c){ var v=r[c].trim(); return v===''?NaN:parseInt(v,10); }); });
+  return {itemNames:itemNames, matrix:matrix, groupRaw:groupRaw, groupValues:groupValues, nRows:rows.length, skippedRows:parsed.skipped};
+}
+
+function wireDichotomousTab() {
+  var el = function(id){ return document.getElementById(id); };
+  el('d_btnTemplate').addEventListener('click', function(){ downloadText('difair_dichotomous_template.csv', TEMPLATE_DICH); });
+  el('d_btnDemo').addEventListener('click', function(){ loadDich(buildDemoDichotomousCSV(), T('demo_dich_label')); });
+
+  var dz = el('d_dropzone'), fi = el('d_fileInput');
+  dz.addEventListener('click', function(e){ if (e.target!==fi) fi.click(); });
+  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
+  dz.addEventListener('drop', function(e){ e.preventDefault(); dz.classList.remove('drag'); var f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readFileD(f); });
+  fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; if(f) readFileD(f); });
+
+  function readFileD(file) {
+    var reader = new FileReader();
+    reader.onload = function(){ loadDich(String(reader.result), file.name); };
+    reader.onerror = function(){ showErrorD({message:T('err_read_fail')}); };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  function showErrorD(err) {
+    el('d_parseError').innerHTML = '<div class="error-box reveal"><span class="err-title">'+T('err_title')+'</span>'+escapeHtml(err.message)+'</div>';
+    el('d_step2').classList.add('hidden'); el('d_step3').classList.add('hidden');
+  }
+
+  function loadDich(text, sourceLabel) {
+    el('d_parseError').innerHTML = '';
+    var parsed;
+    try { parsed = parseDichotomousCSV(text); }
+    catch (err) { showErrorD(err.message?err:{message:T('err_unrecognized')}); return; }
+
+    stateD.itemNames = parsed.itemNames; stateD.matrix = parsed.matrix;
+    stateD.groupRaw = parsed.groupRaw; stateD.groupValues = parsed.groupValues; stateD.skippedRows = parsed.skippedRows;
+
+    el('d_fileStatus').innerHTML = '<span style="color:var(--a-ok);">'+T('loaded_label')+'</span> '+escapeHtml(sourceLabel)+
+      ' \u2014 '+parsed.nRows+' '+T('respondents_label')+' \u00b7 '+parsed.itemNames.length+' '+T('items_label')+
+      (parsed.skippedRows ? T('skipped_rows',{n:parsed.skippedRows}) : '');
+
+    el('d_detectedBox').innerHTML = '<b>'+T('group_col_label')+'</b> group &nbsp;\u00b7&nbsp; <b>'+T('two_groups_label')+'</b> "'+
+      escapeHtml(parsed.groupValues[0])+'" / "'+escapeHtml(parsed.groupValues[1])+'" &nbsp;\u00b7&nbsp; <b>'+T('item_cols_label')+'</b> '+
+      parsed.itemNames.length+' ('+escapeHtml(parsed.itemNames.slice(0,4).join(', '))+(parsed.itemNames.length>4?', \u2026':'')+')' +
+      (parsed.nRows<50 ? '<div class="warn-box" style="margin-top:10px;">'+T('small_sample_warn',{n:parsed.nRows})+'</div>' : '');
+
+    el('d_focalSelect').innerHTML = '<option value="">'+T('opt_select')+'</option>'+
+      parsed.groupValues.map(function(g){return '<option value="'+escapeHtml(g)+'">'+escapeHtml(g)+'</option>';}).join('');
+    el('d_btnRun').disabled = true;
+    el('d_step2').classList.remove('hidden'); el('d_step2').classList.add('reveal');
+    el('d_step3').classList.add('hidden');
+  }
+
+  el('d_focalSelect').addEventListener('change', function(){ el('d_btnRun').disabled = !el('d_focalSelect').value; });
+
+  el('d_btnRun').addEventListener('click', function(){
+    var focalLabel = el('d_focalSelect').value;
+    if (!focalLabel) return;
+    var isFocal = stateD.groupRaw.map(function(g){return g===focalLabel;});
+    var itemNames = stateD.itemNames, matrix = stateD.matrix;
+    var useMH = el('d_m_mh').checked, useStd = el('d_m_std').checked, useBD = el('d_m_bd').checked, useLog = el('d_m_log').checked;
+
+    var matching;
+    if (el('d_purifyCheck').checked) matching = purifyDichotomous(matrix, isFocal, itemNames, 5, 0.05).matching;
+    else matching = simpleMatchingScore(matrix);
+
+    var rows = [], nFlagged = 0;
+    for (var j=0;j<itemNames.length;j++) {
+      var col = matrix.map(function(row){return row[j];});
+      var mh = computeMH(col, isFocal, matching);
+      var mhClass = etsClassMH(mh.delta_mh, mh.p_value, 0.05);
+      var row = {item: itemNames[j], n_ref: mh.n_ref, n_foc: mh.n_foc, mh:mh, mh_class:mhClass};
+      var flagged = false;
+      if (useMH && (mhClass==='B'||mhClass==='C')) flagged = true;
+      if (useStd) { row.std = standardization(col, isFocal, matching); if (row.std.std_class==='large') flagged = true; }
+      if (useBD) { row.bd = breslowDay(col, isFocal, matching, true); if (row.bd.nonuniform_flag) flagged = true; }
+      if (useLog) { row.log = logisticDif(col, isFocal, matching); if (row.log && row.log.zt_class==='large') flagged = true; }
+      row.flagged = flagged;
+      if (flagged) nFlagged++;
+      rows.push(row);
+    }
+
+    var favorsLabel = function(f){ return f==='reference'?T('favors_reference'):(f==='focal'?T('favors_focal'):(f==='neither'?T('favors_neither'):T('favors_undetermined'))); };
+
+    var theadCells = ['<th>'+T('th_item')+'</th>','<th class="num">N ref</th>','<th class="num">N foc</th>'];
+    if (useMH) theadCells.push('<th class="num">MH &Delta;</th>','<th class="num">&chi;&sup2;</th>','<th class="num">p</th>','<th>ETS</th>','<th>Favors</th>');
+    if (useStd) theadCells.push('<th class="num">STD P-DIF</th>','<th>STD class</th>');
+    if (useBD) theadCells.push('<th class="num">BD stat</th>','<th class="num">BD p</th>');
+    if (useLog) theadCells.push('<th class="num">LR &chi;&sup2;</th>','<th class="num">LR p</th>','<th class="num">&Delta;R&sup2;</th>','<th>ZT class</th>');
+    el('d_theadRow').innerHTML = theadCells.join('');
+
+    el('d_resultsBody').innerHTML = rows.map(function(r){
+      var cells = ['<td class="item-name">'+escapeHtml(r.item)+'</td>','<td class="num">'+r.n_ref+'</td>','<td class="num">'+r.n_foc+'</td>'];
+      if (useMH) cells.push('<td class="num">'+fmtNum(r.mh.delta_mh,3)+'</td>','<td class="num">'+fmtNum(r.mh.chi2,2)+'</td>','<td class="num">'+fmtP(r.mh.p_value)+'</td>',
+        '<td><span class="pill pill-'+r.mh_class+'">'+r.mh_class+'</span></td>','<td>'+favorsLabel(favorsMH(r.mh.delta_mh))+'</td>');
+      if (useStd) cells.push('<td class="num">'+fmtNum(r.std.std_p_dif,4)+'</td>','<td><span class="pill pill-'+r.std.std_class+'">'+r.std.std_class+'</span></td>');
+      if (useBD) cells.push('<td class="num">'+fmtNum(r.bd.bd_stat,3)+'</td>','<td class="num">'+fmtP(r.bd.p_value)+'</td>');
+      if (useLog) { if (r.log) cells.push('<td class="num">'+fmtNum(r.log.chi2_total,2)+'</td>','<td class="num">'+fmtP(r.log.p_total)+'</td>','<td class="num">'+fmtNum(r.log.delta_r2,4)+'</td>','<td><span class="pill pill-'+r.log.zt_class+'">'+r.log.zt_class+'</span></td>');
+        else cells.push('<td class="num">\u2014</td>','<td class="num">\u2014</td>','<td class="num">\u2014</td>','<td>\u2014</td>'); }
+      return '<tr class="'+(r.flagged?'is-flagged':'')+'">'+cells.join('')+'</tr>';
+    }).join('');
+
+    el('d_summaryLine').innerHTML = T('flagged_summary', {focal:escapeHtml(focalLabel), n:nFlagged, total:itemNames.length});
+    stateD.lastResults = {rows:rows, useMH:useMH, useStd:useStd, useBD:useBD, useLog:useLog};
+    el('d_step3').classList.remove('hidden'); el('d_step3').classList.add('reveal');
+  });
+
+  el('d_btnDownloadResults').addEventListener('click', function(){
+    if (!stateD.lastResults) return;
+    var lr = stateD.lastResults;
+    var header = ['item','n_ref','n_foc','flagged'];
+    if (lr.useMH) header = header.concat(['mh_delta','mh_chi2','mh_p','mh_class','mh_favors']);
+    if (lr.useStd) header = header.concat(['std_p_dif','std_class']);
+    if (lr.useBD) header = header.concat(['bd_stat','bd_p','bd_nonuniform_flag']);
+    if (lr.useLog) header = header.concat(['log_chi2_total','log_p_total','log_delta_r2','log_zt_class']);
+    var lines = [header.join(',')];
+    lr.rows.forEach(function(r){
+      var vals = [r.item, r.n_ref, r.n_foc, r.flagged];
+      if (lr.useMH) vals = vals.concat([isNaN(r.mh.delta_mh)?'':r.mh.delta_mh.toFixed(6), isNaN(r.mh.chi2)?'':r.mh.chi2.toFixed(6), isNaN(r.mh.p_value)?'':r.mh.p_value.toExponential(6), r.mh_class, favorsMH(r.mh.delta_mh)]);
+      if (lr.useStd) vals = vals.concat([isNaN(r.std.std_p_dif)?'':r.std.std_p_dif.toFixed(6), r.std.std_class]);
+      if (lr.useBD) vals = vals.concat([isNaN(r.bd.bd_stat)?'':r.bd.bd_stat.toFixed(6), isNaN(r.bd.p_value)?'':r.bd.p_value.toExponential(6), r.bd.nonuniform_flag]);
+      if (lr.useLog) vals = vals.concat(r.log ? [r.log.chi2_total.toFixed(6), r.log.p_total.toExponential(6), r.log.delta_r2.toFixed(6), r.log.zt_class] : ['','','','']);
+      lines.push(vals.join(','));
+    });
+    downloadText('difair_dichotomous_results.csv', lines.join('\n'));
+  });
+}
+/* ================= Tab: Polytomous DIF wiring ================= */
+var TEMPLATE_POLY = 'student_id,group,item_01,item_02,item_03,item_04,item_05\n'+
+'S0001,reference,2,3,1,0,2\nS0002,reference,3,3,2,1,3\nS0003,reference,1,2,0,0,1\n'+
+'S0004,reference,2,3,2,1,2\nS0005,focal,1,1,0,0,1\nS0006,focal,0,1,1,0,0\n'+
+'S0007,focal,2,2,1,1,1\nS0008,focal,1,0,0,0,2\n';
+
+var stateP = { itemNames:[], matrix:[], groupRaw:[], groupValues:[], skippedRows:0, lastResults:null };
+
+function parsePolyCSV(text) {
+  var parsed = parseCSVRaw(text);
+  var header = parsed.header, rows = parsed.rows;
+  var groupIdx = findColIdx(header, 'group');
+  if (groupIdx === -1) throw {message: T('err_no_group')};
+  var itemIdx = detectItemColumns(header, rows, [groupIdx], false);
+  itemIdx = itemIdx.filter(function(c){
+    var vals = new Set();
+    for (var r=0;r<rows.length;r++) { var v=rows[r][c].trim(); if (v!=='') vals.add(Number(v)); }
+    return vals.size >= 3; // require at least 3 categories to be "polytomous"
+  });
+  if (itemIdx.length === 0) throw {message: T('err_no_items')};
+  var itemNames = itemIdx.map(function(c){return header[c];});
+  var groupRaw = rows.map(function(r){return r[groupIdx].trim();});
+  var groupValues = getDistinctGroupValues(groupRaw);
+  if (groupValues.length < 2) throw {message: T('err_one_group', {n:groupValues.length, vals:groupValues.join(', ')})};
+  if (groupValues.length > 2) throw {message: T('err_many_groups', {n:groupValues.length, vals:groupValues.slice(0,6).join(', ')})};
+  var matrix = rows.map(function(r){ return itemIdx.map(function(c){ var v=r[c].trim(); return v===''?NaN:parseInt(v,10); }); });
+  return {itemNames:itemNames, matrix:matrix, groupRaw:groupRaw, groupValues:groupValues, nRows:rows.length, skippedRows:parsed.skipped};
+}
+
+function wirePolyTab() {
+  var el = function(id){ return document.getElementById(id); };
+  el('p_btnTemplate').addEventListener('click', function(){ downloadText('difair_polytomous_template.csv', TEMPLATE_POLY); });
+  el('p_btnDemo').addEventListener('click', function(){ loadPoly(buildDemoPolyCSV(), T('demo_poly_label')); });
+
+  var dz = el('p_dropzone'), fi = el('p_fileInput');
+  dz.addEventListener('click', function(e){ if (e.target!==fi) fi.click(); });
+  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
+  dz.addEventListener('drop', function(e){ e.preventDefault(); dz.classList.remove('drag'); var f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readFileP(f); });
+  fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; if(f) readFileP(f); });
+
+  function readFileP(file) {
+    var reader = new FileReader();
+    reader.onload = function(){ loadPoly(String(reader.result), file.name); };
+    reader.onerror = function(){ showErrorP({message:T('err_read_fail')}); };
+    reader.readAsText(file, 'UTF-8');
+  }
+  function showErrorP(err) {
+    el('p_parseError').innerHTML = '<div class="error-box reveal"><span class="err-title">'+T('err_title')+'</span>'+escapeHtml(err.message)+'</div>';
+    el('p_step2').classList.add('hidden'); el('p_step3').classList.add('hidden');
+  }
+
+  function loadPoly(text, sourceLabel) {
+    el('p_parseError').innerHTML = '';
+    var parsed;
+    try { parsed = parsePolyCSV(text); }
+    catch (err) { showErrorP(err.message?err:{message:T('err_unrecognized')}); return; }
+    stateP.itemNames = parsed.itemNames; stateP.matrix = parsed.matrix;
+    stateP.groupRaw = parsed.groupRaw; stateP.groupValues = parsed.groupValues; stateP.skippedRows = parsed.skippedRows;
+
+    el('p_fileStatus').innerHTML = '<span style="color:var(--a-ok);">'+T('loaded_label')+'</span> '+escapeHtml(sourceLabel)+
+      ' \u2014 '+parsed.nRows+' '+T('respondents_label')+' \u00b7 '+parsed.itemNames.length+' '+T('items_label')+
+      (parsed.skippedRows ? T('skipped_rows',{n:parsed.skippedRows}) : '');
+    el('p_detectedBox').innerHTML = '<b>'+T('group_col_label')+'</b> group &nbsp;\u00b7&nbsp; <b>'+T('two_groups_label')+'</b> "'+
+      escapeHtml(parsed.groupValues[0])+'" / "'+escapeHtml(parsed.groupValues[1])+'" &nbsp;\u00b7&nbsp; <b>'+T('item_cols_label')+'</b> '+
+      parsed.itemNames.length+' ('+escapeHtml(parsed.itemNames.slice(0,4).join(', '))+(parsed.itemNames.length>4?', \u2026':'')+')' +
+      (parsed.nRows<50 ? '<div class="warn-box" style="margin-top:10px;">'+T('small_sample_warn',{n:parsed.nRows})+'</div>' : '');
+    el('p_focalSelect').innerHTML = '<option value="">'+T('opt_select')+'</option>'+
+      parsed.groupValues.map(function(g){return '<option value="'+escapeHtml(g)+'">'+escapeHtml(g)+'</option>';}).join('');
+    el('p_btnRun').disabled = true;
+    el('p_step2').classList.remove('hidden'); el('p_step2').classList.add('reveal');
+    el('p_step3').classList.add('hidden');
+  }
+
+  el('p_focalSelect').addEventListener('change', function(){ el('p_btnRun').disabled = !el('p_focalSelect').value; });
+
+  el('p_btnRun').addEventListener('click', function(){
+    var focalLabel = el('p_focalSelect').value;
+    if (!focalLabel) return;
+    var isFocal = stateP.groupRaw.map(function(g){return g===focalLabel;});
+    var itemNames = stateP.itemNames, matrix = stateP.matrix;
+    var useGMH = el('p_m_gmh').checked, useOrd = el('p_m_ord').checked;
+
+    var matching;
+    if (el('p_purifyCheck').checked) matching = purifyPoly(matrix, isFocal, itemNames, 5, 0.05).matching;
+    else matching = simpleMatchingScore(matrix);
+
+    el('p_resultsBody').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;">\u2026</td></tr>';
+
+    setTimeout(function(){
+      var rows = [], nFlagged = 0;
+      for (var j=0;j<itemNames.length;j++) {
+        var col = matrix.map(function(row){return row[j];});
+        var row = {item: itemNames[j]};
+        var flagged = false;
+        if (useGMH) { row.gmh = generalizedMH(col, isFocal, matching, 0.05); if (row.gmh.smd_class==='B'||row.gmh.smd_class==='C') flagged=true; row.n_strata = row.gmh.n_strata; }
+        if (useOrd) { row.ord = ordinalLogisticDif(col, isFocal, matching); }
+        row.flagged = flagged;
+        if (flagged) nFlagged++;
+        rows.push(row);
+      }
+
+      var favorsLabel = function(f){ return f==='reference'?T('favors_reference'):(f==='focal'?T('favors_focal'):(f==='neither'?T('favors_neither'):T('favors_undetermined'))); };
+
+      var theadCells = ['<th>'+T('th_item')+'</th>'];
+      if (useGMH) theadCells.push('<th class="num">&chi;&sup2;</th>','<th class="num">p</th>','<th class="num">SMD</th>','<th>class</th>','<th>Favors</th>');
+      if (useOrd) theadCells.push('<th class="num">LR &chi;&sup2;</th>','<th class="num">LR p</th>','<th class="num">&beta;<sub>group</sub></th>','<th class="num">&beta;<sub>interact</sub></th>');
+      el('p_theadRow').innerHTML = theadCells.join('');
+
+      el('p_resultsBody').innerHTML = rows.map(function(r){
+        var cells = ['<td class="item-name">'+escapeHtml(r.item)+'</td>'];
+        if (useGMH) cells.push('<td class="num">'+fmtNum(r.gmh.chi2,2)+'</td>','<td class="num">'+fmtP(r.gmh.p_value)+'</td>','<td class="num">'+fmtNum(r.gmh.smd,4)+'</td>',
+          '<td><span class="pill pill-'+r.gmh.smd_class+'">'+r.gmh.smd_class+'</span></td>','<td>'+favorsLabel(r.gmh.favors)+'</td>');
+        if (useOrd) { if (r.ord) cells.push('<td class="num">'+fmtNum(r.ord.chi2_total,2)+'</td>','<td class="num">'+fmtP(r.ord.p_total)+'</td>','<td class="num">'+fmtNum(r.ord.beta_group,4)+'</td>','<td class="num">'+fmtNum(r.ord.beta_interaction,4)+'</td>');
+          else cells.push('<td class="num">\u2014</td>','<td class="num">\u2014</td>','<td class="num">\u2014</td>','<td class="num">\u2014</td>'); }
+        return '<tr class="'+(r.flagged?'is-flagged':'')+'">'+cells.join('')+'</tr>';
+      }).join('');
+
+      el('p_summaryLine').innerHTML = T('flagged_summary', {focal:escapeHtml(focalLabel), n:nFlagged, total:itemNames.length});
+      stateP.lastResults = {rows:rows, useGMH:useGMH, useOrd:useOrd};
+      el('p_step3').classList.remove('hidden'); el('p_step3').classList.add('reveal');
+    }, 30);
+  });
+
+  el('p_btnDownloadResults').addEventListener('click', function(){
+    if (!stateP.lastResults) return;
+    var lr = stateP.lastResults;
+    var header = ['item','flagged'];
+    if (lr.useGMH) header = header.concat(['gmh_chi2','gmh_p','gmh_smd','gmh_class','gmh_favors']);
+    if (lr.useOrd) header = header.concat(['ord_chi2_total','ord_p_total','ord_beta_group','ord_beta_interaction']);
+    var lines = [header.join(',')];
+    lr.rows.forEach(function(r){
+      var vals = [r.item, r.flagged];
+      if (lr.useGMH) vals = vals.concat([isNaN(r.gmh.chi2)?'':r.gmh.chi2.toFixed(6), isNaN(r.gmh.p_value)?'':r.gmh.p_value.toExponential(6), isNaN(r.gmh.smd)?'':r.gmh.smd.toFixed(6), r.gmh.smd_class, r.gmh.favors]);
+      if (lr.useOrd) vals = vals.concat(r.ord ? [r.ord.chi2_total.toFixed(6), r.ord.p_total.toExponential(6), r.ord.beta_group.toFixed(6), r.ord.beta_interaction.toFixed(6)] : ['','','','']);
+      lines.push(vals.join(','));
+    });
+    downloadText('difair_polytomous_results.csv', lines.join('\n'));
+  });
+}
+/* ================= Tab: Fairness Metrics wiring ================= */
+var TEMPLATE_FAIR = 'person_id,group,y_pred,y_true,y_score,ordinal_outcome\n'+
+'P0001,reference,1,1,0.82,3\nP0002,reference,0,0,0.31,1\nP0003,reference,1,0,0.61,2\n'+
+'P0004,focal,0,1,0.44,2\nP0005,focal,0,0,0.29,1\nP0006,focal,1,1,0.77,3\n'+
+'P0007,reference,1,1,0.88,4\nP0008,focal,0,0,0.22,0\n';
+
+var stateF = { group:[], yPred:[], yTrue:null, yScore:null, ordinal:null, groupValues:[], lastResults:null };
+
+function parseFairCSV(text) {
+  var parsed = parseCSVRaw(text);
+  var header = parsed.header, rows = parsed.rows;
+  var groupIdx = findColIdx(header, 'group');
+  var ypredIdx = findColIdx(header, 'y_pred');
+  if (groupIdx === -1) throw {message: T('err_no_group')};
+  if (ypredIdx === -1) throw {message: T('err_missing_cols', {cols:'y_pred'})};
+  var ytrueIdx = findColIdx(header, 'y_true');
+  var yscoreIdx = findColIdx(header, 'y_score');
+  var ordIdx = findColIdx(header, 'ordinal_outcome');
+
+  var groupRaw = rows.map(function(r){return r[groupIdx].trim();});
+  var groupValues = getDistinctGroupValues(groupRaw);
+  if (groupValues.length < 2) throw {message: T('err_one_group', {n:groupValues.length, vals:groupValues.join(', ')})};
+  if (groupValues.length > 2) throw {message: T('err_many_groups', {n:groupValues.length, vals:groupValues.slice(0,6).join(', ')})};
+
+  var yPred = rows.map(function(r){ var v=r[ypredIdx].trim(); return v===''?NaN:parseInt(v,10); });
+  var yTrue = ytrueIdx===-1 ? null : rows.map(function(r){ var v=r[ytrueIdx].trim(); return v===''?NaN:parseInt(v,10); });
+  var yScore = yscoreIdx===-1 ? null : rows.map(function(r){ var v=r[yscoreIdx].trim(); return v===''?NaN:parseFloat(v); });
+  var ordinal = ordIdx===-1 ? null : rows.map(function(r){ var v=r[ordIdx].trim(); return v===''?NaN:parseFloat(v); });
+
+  return {group:groupRaw, yPred:yPred, yTrue:yTrue, yScore:yScore, ordinal:ordinal, groupValues:groupValues, nRows:rows.length, skippedRows:parsed.skipped,
+    hasYTrue: ytrueIdx!==-1, hasYScore: yscoreIdx!==-1, hasOrdinal: ordIdx!==-1};
+}
+
+function wireFairTab() {
+  var el = function(id){ return document.getElementById(id); };
+  el('f_btnTemplate').addEventListener('click', function(){ downloadText('difair_fairness_template.csv', TEMPLATE_FAIR); });
+  el('f_btnDemo').addEventListener('click', function(){ loadFair(buildDemoFairnessCSV(), T('demo_fair_label')); });
+
+  var dz = el('f_dropzone'), fi = el('f_fileInput');
+  dz.addEventListener('click', function(e){ if (e.target!==fi) fi.click(); });
+  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
+  dz.addEventListener('drop', function(e){ e.preventDefault(); dz.classList.remove('drag'); var f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readFileF(f); });
+  fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; if(f) readFileF(f); });
+
+  function readFileF(file) {
+    var reader = new FileReader();
+    reader.onload = function(){ loadFair(String(reader.result), file.name); };
+    reader.onerror = function(){ showErrorF({message:T('err_read_fail')}); };
+    reader.readAsText(file, 'UTF-8');
+  }
+  function showErrorF(err) {
+    el('f_parseError').innerHTML = '<div class="error-box reveal"><span class="err-title">'+T('err_title')+'</span>'+escapeHtml(err.message)+'</div>';
+    el('f_step2').classList.add('hidden'); el('f_step3').classList.add('hidden');
+  }
+
+  function loadFair(text, sourceLabel) {
+    el('f_parseError').innerHTML = '';
+    var parsed;
+    try { parsed = parseFairCSV(text); }
+    catch (err) { showErrorF(err.message?err:{message:T('err_unrecognized')}); return; }
+    stateF.group = parsed.group; stateF.yPred = parsed.yPred; stateF.yTrue = parsed.yTrue;
+    stateF.yScore = parsed.yScore; stateF.ordinal = parsed.ordinal; stateF.groupValues = parsed.groupValues;
+
+    var extras = [];
+    if (parsed.hasYTrue) extras.push('y_true');
+    if (parsed.hasYScore) extras.push('y_score');
+    if (parsed.hasOrdinal) extras.push('ordinal_outcome');
+    el('f_fileStatus').innerHTML = '<span style="color:var(--a-ok);">'+T('loaded_label')+'</span> '+escapeHtml(sourceLabel)+
+      ' \u2014 '+parsed.nRows+' '+T('respondents_label')+(extras.length? ' \u00b7 '+extras.join(', ') : '')+
+      (parsed.skippedRows ? T('skipped_rows',{n:parsed.skippedRows}) : '');
+    el('f_detectedBox').innerHTML = '<b>'+T('group_col_label')+'</b> group &nbsp;\u00b7&nbsp; <b>'+T('two_groups_label')+'</b> "'+
+      escapeHtml(parsed.groupValues[0])+'" / "'+escapeHtml(parsed.groupValues[1])+'"' +
+      (parsed.nRows<50 ? '<div class="warn-box" style="margin-top:10px;">'+T('small_sample_warn',{n:parsed.nRows})+'</div>' : '');
+    el('f_focalSelect').innerHTML = '<option value="">'+T('opt_select')+'</option>'+
+      parsed.groupValues.map(function(g){return '<option value="'+escapeHtml(g)+'">'+escapeHtml(g)+'</option>';}).join('');
+    el('f_btnRun').disabled = true;
+    el('f_step2').classList.remove('hidden'); el('f_step2').classList.add('reveal');
+    el('f_step3').classList.add('hidden');
+  }
+
+  el('f_focalSelect').addEventListener('change', function(){ el('f_btnRun').disabled = !el('f_focalSelect').value; });
+
+  el('f_btnRun').addEventListener('click', function(){
+    var focalLabel = el('f_focalSelect').value;
+    if (!focalLabel) return;
+    var rowsOut = [];
+    var dp = demographicParity(stateF.yPred, stateF.group, focalLabel);
+    rowsOut.push({metric:'demographic_parity', value:dp.difference, detail:'focal='+fmtNum(dp.focal_rate,4)+', ref='+fmtNum(dp.reference_rate,4)+', ratio='+fmtNum(dp.ratio,4)});
+    if (stateF.yTrue) {
+      var eo = equalizedOdds(stateF.yTrue, stateF.yPred, stateF.group, focalLabel);
+      rowsOut.push({metric:'equalized_odds', value:eo.max_violation, detail:'tpr_diff='+fmtNum(eo.tpr_difference,4)+', fpr_diff='+fmtNum(eo.fpr_difference,4)});
+      var eopp = equalOpportunity(stateF.yTrue, stateF.yPred, stateF.group, focalLabel);
+      rowsOut.push({metric:'equal_opportunity', value:eopp.tpr_difference, detail:''});
+      var pp = predictiveParity(stateF.yTrue, stateF.yPred, stateF.group, focalLabel);
+      rowsOut.push({metric:'predictive_parity', value:pp.ppv_difference, detail:''});
+      if (stateF.yScore) {
+        var cg = calibrationGap(stateF.yTrue, stateF.yScore, stateF.group, focalLabel, 10);
+        rowsOut.push({metric:'calibration_gap', value:cg.difference, detail:'focal_ece='+fmtNum(cg.focal_ece,4)+', ref_ece='+fmtNum(cg.reference_ece,4)});
+      }
+    }
+    el('f_resultsBody').innerHTML = rowsOut.map(function(r){
+      return '<tr><td class="item-name">'+r.metric+'</td><td class="num">'+fmtNum(r.value,4)+'</td><td>'+r.detail+'</td></tr>';
+    }).join('');
+
+    var ordResult = null;
+    if (stateF.ordinal) {
+      ordResult = ordinalDisparity(stateF.ordinal, stateF.group, focalLabel);
+      if (ordResult) {
+        el('f_ordinalBlock').classList.remove('hidden');
+        var kv = [
+          ['mean_difference', fmtNum(ordResult.mean_difference,4)],
+          ['standardized_difference', fmtNum(ordResult.standardized_difference,4)],
+          ['probability_superiority', fmtNum(ordResult.probability_superiority,4)],
+          ['95% CI', '['+fmtNum(ordResult.ps_ci_low,3)+', '+fmtNum(ordResult.ps_ci_high,3)+']'],
+          ['max_cumulative_gap', fmtNum(ordResult.max_cumulative_gap,4)],
+        ];
+        el('f_ordinalKV').innerHTML = kv.map(function(p){
+          return '<div class="kv-card"><div class="kv-label">'+p[0]+'</div><div class="kv-value">'+p[1]+'</div></div>';
+        }).join('');
+      }
+    } else {
+      el('f_ordinalBlock').classList.add('hidden');
+    }
+
+    stateF.lastResults = {rows: rowsOut, ordinal: ordResult};
+    el('f_step3').classList.remove('hidden'); el('f_step3').classList.add('reveal');
+  });
+
+  el('f_btnDownloadResults').addEventListener('click', function(){
+    if (!stateF.lastResults) return;
+    var lines = ['metric,value,detail'];
+    stateF.lastResults.rows.forEach(function(r){ lines.push([r.metric, isNaN(r.value)?'':r.value.toFixed(6), '"'+r.detail+'"'].join(',')); });
+    if (stateF.lastResults.ordinal) {
+      var o = stateF.lastResults.ordinal;
+      lines.push('ordinal_mean_difference,'+o.mean_difference.toFixed(6)+',');
+      lines.push('ordinal_probability_superiority,'+o.probability_superiority.toFixed(6)+',');
+      lines.push('ordinal_max_cumulative_gap,'+o.max_cumulative_gap.toFixed(6)+',');
+    }
+    downloadText('difair_fairness_results.csv', lines.join('\n'));
+  });
+}
+/* ================= Tab: Survey Design wiring ================= */
+var TEMPLATE_SURVEY = 'student_id,group,weight,stratum,psu,item_01,item_02,item_03,item_04\n'+
+'S0001,reference,1.0,1,1-1,1,1,0,1\nS0002,reference,1.0,1,1-1,1,0,0,1\nS0003,reference,1.0,1,1-2,0,1,1,1\n'+
+'S0004,reference,1.0,2,2-1,1,1,1,0\nS0005,focal,1.0,1,1-1,1,0,0,0\nS0006,focal,1.0,1,1-2,0,0,0,1\n'+
+'S0007,focal,1.0,2,2-1,1,1,0,1\nS0008,focal,1.0,2,2-2,0,1,0,0\n';
+
+var TEMPLATE_POOL = 'analysis,estimate,se\nCountry A,-0.82,0.15\nCountry B,-0.65,0.18\nCountry C,-0.91,0.14\nCountry D,-0.40,0.22\n';
+
+var stateS = { itemNames:[], matrix:[], groupRaw:[], groupValues:[], weight:[], strata:[], psu:[], lastResults:null };
+var statePool = { analysis:[], estimate:[], se:[], lastResult:null };
+
+function parseSurveyCSV(text) {
+  var parsed = parseCSVRaw(text);
+  var header = parsed.header, rows = parsed.rows;
+  var groupIdx = findColIdx(header, 'group');
+  var weightIdx = findColIdx(header, 'weight');
+  var strataIdx = findColIdx(header, 'stratum');
+  var psuIdx = findColIdx(header, 'psu');
+  var missing = [];
+  if (groupIdx===-1) missing.push('group');
+  if (weightIdx===-1) missing.push('weight');
+  if (strataIdx===-1) missing.push('stratum');
+  if (psuIdx===-1) missing.push('psu');
+  if (missing.length) throw {message: T('err_missing_cols', {cols: missing.join(', ')})};
+
+  var itemIdx = detectItemColumns(header, rows, [groupIdx, weightIdx, strataIdx, psuIdx], true);
+  if (itemIdx.length === 0) throw {message: T('err_no_items')};
+  var itemNames = itemIdx.map(function(c){return header[c];});
+  var groupRaw = rows.map(function(r){return r[groupIdx].trim();});
+  var groupValues = getDistinctGroupValues(groupRaw);
+  if (groupValues.length < 2) throw {message: T('err_one_group', {n:groupValues.length, vals:groupValues.join(', ')})};
+  if (groupValues.length > 2) throw {message: T('err_many_groups', {n:groupValues.length, vals:groupValues.slice(0,6).join(', ')})};
+  var matrix = rows.map(function(r){ return itemIdx.map(function(c){ var v=r[c].trim(); return v===''?NaN:parseInt(v,10); }); });
+  var weight = rows.map(function(r){ var v=r[weightIdx].trim(); return v===''?1:parseFloat(v); });
+  var strata = rows.map(function(r){ return r[strataIdx].trim(); });
+  var psu = rows.map(function(r){ return r[psuIdx].trim(); });
+  return {itemNames:itemNames, matrix:matrix, groupRaw:groupRaw, groupValues:groupValues, weight:weight, strata:strata, psu:psu, nRows:rows.length, skippedRows:parsed.skipped};
+}
+
+function parsePoolCSV(text) {
+  var parsed = parseCSVRaw(text);
+  var header = parsed.header, rows = parsed.rows;
+  var aIdx = findColIdx(header,'analysis'), eIdx = findColIdx(header,'estimate'), sIdx = findColIdx(header,'se');
+  var missing = [];
+  if (aIdx===-1) missing.push('analysis');
+  if (eIdx===-1) missing.push('estimate');
+  if (sIdx===-1) missing.push('se');
+  if (missing.length) throw {message: T('err_missing_cols', {cols: missing.join(', ')})};
+  var analysis = rows.map(function(r){return r[aIdx].trim();});
+  var estimate = rows.map(function(r){return parseFloat(r[eIdx].trim());});
+  var se = rows.map(function(r){return parseFloat(r[sIdx].trim());});
+  return {analysis:analysis, estimate:estimate, se:se, nRows:rows.length, skippedRows:parsed.skipped};
+}
+
+function wireSurveyTab() {
+  var el = function(id){ return document.getElementById(id); };
+  el('s_btnTemplate').addEventListener('click', function(){ downloadText('difair_survey_template.csv', TEMPLATE_SURVEY); });
+  el('s_btnDemo').addEventListener('click', function(){ loadSurvey(buildDemoSurveyCSV(), T('demo_survey_label')); });
+
+  var dz = el('s_dropzone'), fi = el('s_fileInput');
+  dz.addEventListener('click', function(e){ if (e.target!==fi) fi.click(); });
+  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
+  dz.addEventListener('drop', function(e){ e.preventDefault(); dz.classList.remove('drag'); var f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readFileS(f); });
+  fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; if(f) readFileS(f); });
+
+  function readFileS(file) {
+    var reader = new FileReader();
+    reader.onload = function(){ loadSurvey(String(reader.result), file.name); };
+    reader.onerror = function(){ showErrorS({message:T('err_read_fail')}); };
+    reader.readAsText(file, 'UTF-8');
+  }
+  function showErrorS(err) {
+    el('s_parseError').innerHTML = '<div class="error-box reveal"><span class="err-title">'+T('err_title')+'</span>'+escapeHtml(err.message)+'</div>';
+    el('s_step2').classList.add('hidden'); el('s_step3').classList.add('hidden');
+  }
+
+  function loadSurvey(text, sourceLabel) {
+    el('s_parseError').innerHTML = '';
+    var parsed;
+    try { parsed = parseSurveyCSV(text); }
+    catch (err) { showErrorS(err.message?err:{message:T('err_unrecognized')}); return; }
+    stateS.itemNames=parsed.itemNames; stateS.matrix=parsed.matrix; stateS.groupRaw=parsed.groupRaw; stateS.groupValues=parsed.groupValues;
+    stateS.weight=parsed.weight; stateS.strata=parsed.strata; stateS.psu=parsed.psu;
+
+    var nPsu = new Set(parsed.strata.map(function(s,i){return s+'||'+parsed.psu[i];})).size;
+    el('s_fileStatus').innerHTML = '<span style="color:var(--a-ok);">'+T('loaded_label')+'</span> '+escapeHtml(sourceLabel)+
+      ' \u2014 '+parsed.nRows+' '+T('respondents_label')+' \u00b7 '+parsed.itemNames.length+' '+T('items_label')+' \u00b7 '+nPsu+' PSUs'+
+      (parsed.skippedRows ? T('skipped_rows',{n:parsed.skippedRows}) : '');
+    el('s_detectedBox').innerHTML = '<b>'+T('group_col_label')+'</b> group &nbsp;\u00b7&nbsp; <b>'+T('two_groups_label')+'</b> "'+
+      escapeHtml(parsed.groupValues[0])+'" / "'+escapeHtml(parsed.groupValues[1])+'"';
+    el('s_focalSelect').innerHTML = '<option value="">'+T('opt_select')+'</option>'+
+      parsed.groupValues.map(function(g){return '<option value="'+escapeHtml(g)+'">'+escapeHtml(g)+'</option>';}).join('');
+    el('s_btnRun').disabled = true;
+    el('s_step2').classList.remove('hidden'); el('s_step2').classList.add('reveal');
+    el('s_step3').classList.add('hidden');
+  }
+
+  el('s_focalSelect').addEventListener('change', function(){ el('s_btnRun').disabled = !el('s_focalSelect').value; });
+
+  el('s_btnRun').addEventListener('click', function(){
+    var focalLabel = el('s_focalSelect').value;
+    if (!focalLabel) return;
+    var isFocal = stateS.groupRaw.map(function(g){return g===focalLabel;});
+    var itemNames = stateS.itemNames, matrix = stateS.matrix;
+    var matching = simpleMatchingScore(matrix);
+
+    var replicateWeights;
+    var repError = null;
+    try { replicateWeights = jackknifeWeights(stateS.weight, stateS.strata, stateS.psu); }
+    catch (e) { repError = e; replicateWeights = []; }
+
+    var rows = [];
+    for (var j=0;j<itemNames.length;j++) {
+      var col = matrix.map(function(row){return row[j];});
+      var repForItem = replicateWeights.length ? replicateWeights : null;
+      var res = surveyDifItem(col, isFocal, matching, stateS.weight, repForItem, 'jackknife', 0.05);
+      rows.push({item:itemNames[j], res:res});
+    }
+
+    el('s_resultsBody').innerHTML = rows.map(function(r){
+      return '<tr><td class="item-name">'+escapeHtml(r.item)+'</td><td class="num">'+fmtNum(r.res.estimate,4)+'</td>'+
+        '<td class="num">'+fmtNum(r.res.se,4)+'</td><td class="num">'+fmtNum(r.res.ci_low,4)+'</td>'+
+        '<td class="num">'+fmtNum(r.res.ci_high,4)+'</td><td class="num">'+r.res.n_replicates+'</td></tr>';
+    }).join('');
+
+    var repCount = replicateWeights.length;
+    el('s_summaryLine').innerHTML = (repError ? '<span style="color:var(--a-flag);">'+escapeHtml(repError.message||String(repError))+'</span> \u00b7 ' : '') +
+      T('n_replicates_label')+': <b>'+repCount+'</b>';
+
+    stateS.lastResults = rows;
+    el('s_step3').classList.remove('hidden'); el('s_step3').classList.add('reveal');
+  });
+
+  el('s_btnDownloadResults').addEventListener('click', function(){
+    if (!stateS.lastResults) return;
+    var lines = ['item,estimate,se,ci_low,ci_high,n_replicates'];
+    stateS.lastResults.forEach(function(r){
+      lines.push([r.item, isNaN(r.res.estimate)?'':r.res.estimate.toFixed(6), isNaN(r.res.se)?'':r.res.se.toFixed(6),
+        isNaN(r.res.ci_low)?'':r.res.ci_low.toFixed(6), isNaN(r.res.ci_high)?'':r.res.ci_high.toFixed(6), r.res.n_replicates].join(','));
+    });
+    downloadText('difair_survey_results.csv', lines.join('\n'));
+  });
+
+  /* ---- Pooling sub-tool ---- */
+  el('pool_btnTemplate').addEventListener('click', function(){ downloadText('difair_pool_template.csv', TEMPLATE_POOL); });
+  el('pool_btnDemo').addEventListener('click', function(){ loadPool(buildDemoPoolCSV(), T('demo_pool_label')); });
+
+  var pdz = el('pool_dropzone'), pfi = el('pool_fileInput');
+  pdz.addEventListener('click', function(e){ if (e.target!==pfi) pfi.click(); });
+  pdz.addEventListener('dragover', function(e){ e.preventDefault(); pdz.classList.add('drag'); });
+  pdz.addEventListener('dragleave', function(){ pdz.classList.remove('drag'); });
+  pdz.addEventListener('drop', function(e){ e.preventDefault(); pdz.classList.remove('drag'); var f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readFilePool(f); });
+  pfi.addEventListener('change', function(){ var f=pfi.files&&pfi.files[0]; if(f) readFilePool(f); });
+
+  function readFilePool(file) {
+    var reader = new FileReader();
+    reader.onload = function(){ loadPool(String(reader.result), file.name); };
+    reader.onerror = function(){ showErrorPool({message:T('err_read_fail')}); };
+    reader.readAsText(file, 'UTF-8');
+  }
+  function showErrorPool(err) {
+    el('pool_parseError').innerHTML = '<div class="error-box reveal"><span class="err-title">'+T('err_title')+'</span>'+escapeHtml(err.message)+'</div>';
+    el('pool_btnRun').disabled = true;
+    el('pool_results').classList.add('hidden');
+  }
+  function loadPool(text, sourceLabel) {
+    el('pool_parseError').innerHTML = '';
+    var parsed;
+    try { parsed = parsePoolCSV(text); }
+    catch (err) { showErrorPool(err.message?err:{message:T('err_unrecognized')}); return; }
+    statePool.analysis = parsed.analysis; statePool.estimate = parsed.estimate; statePool.se = parsed.se;
+    el('pool_fileStatus').innerHTML = '<span style="color:var(--a-ok);">'+T('loaded_label')+'</span> '+escapeHtml(sourceLabel)+' \u2014 '+parsed.nRows+' analyses';
+    el('pool_btnRun').disabled = false;
+    el('pool_results').classList.add('hidden');
+  }
+
+  el('pool_btnRun').addEventListener('click', function(){
+    var method = el('pool_method').value;
+    var res = poolEstimates(statePool.estimate, statePool.se, method);
+    statePool.lastResult = res;
+    var kv = [
+      ['estimate', fmtNum(res.estimate,4)],
+      ['se', fmtNum(res.se,4)],
+      ['95% CI', '['+fmtNum(res.ci_low,3)+', '+fmtNum(res.ci_high,3)+']'],
+      ['Cochran\u2019s Q', fmtNum(res.q,3)],
+      ['I\u00b2', fmtNum(res.i_squared,3)],
+      ['n analyses', res.n_analyses],
+    ];
+    el('pool_kv').innerHTML = kv.map(function(p){ return '<div class="kv-card"><div class="kv-label">'+p[0]+'</div><div class="kv-value">'+p[1]+'</div></div>'; }).join('');
+    el('pool_results').classList.remove('hidden'); el('pool_results').classList.add('reveal');
+  });
+}
+/* ================= Tab: Pipeline Attribution wiring ================= */
+var TEMPLATE_PIPELINE = 'person_id,group,item_01,item_02,item_03,item_04,outcome,outcome_observed,proxy,train_mask\n'+
+'P0001,reference,1,1,0,1,1,1,0.10,1\nP0002,reference,1,0,0,1,0,0,-0.05,1\nP0003,reference,0,1,1,1,1,1,0.02,1\n'+
+'P0004,reference,1,1,1,0,0,0,0.08,1\nP0005,focal,1,0,0,0,1,0,0.88,0\nP0006,focal,0,0,0,1,0,0,0.79,1\n'+
+'P0007,focal,1,1,0,1,1,1,0.91,1\nP0008,focal,0,1,0,0,0,0,0.85,1\n';
+
+var stateL = { itemNames:[], matrix:[], groupRaw:[], groupValues:[], outcome:[], outcomeObserved:null, proxy:null, trainMask:null, lastResults:null };
+
+function parsePipelineCSV(text) {
+  var parsed = parseCSVRaw(text);
+  var header = parsed.header, rows = parsed.rows;
+  var groupIdx = findColIdx(header, 'group');
+  var outcomeIdx = findColIdx(header, 'outcome');
+  if (groupIdx===-1) throw {message: T('err_no_group')};
+  if (outcomeIdx===-1) throw {message: T('err_missing_cols', {cols:'outcome'})};
+  var outcomeObsIdx = findColIdx(header, 'outcome_observed');
+  var proxyIdx = findColIdx(header, 'proxy');
+  var trainMaskIdx = findColIdx(header, 'train_mask');
+
+  var exclude = [groupIdx, outcomeIdx];
+  if (outcomeObsIdx!==-1) exclude.push(outcomeObsIdx);
+  if (proxyIdx!==-1) exclude.push(proxyIdx);
+  if (trainMaskIdx!==-1) exclude.push(trainMaskIdx);
+  var itemIdx = detectItemColumns(header, rows, exclude, true);
+  if (itemIdx.length === 0) throw {message: T('err_no_items')};
+
+  var itemNames = itemIdx.map(function(c){return header[c];});
+  var groupRaw = rows.map(function(r){return r[groupIdx].trim();});
+  var groupValues = getDistinctGroupValues(groupRaw);
+  if (groupValues.length < 2) throw {message: T('err_one_group', {n:groupValues.length, vals:groupValues.join(', ')})};
+  if (groupValues.length > 2) throw {message: T('err_many_groups', {n:groupValues.length, vals:groupValues.slice(0,6).join(', ')})};
+  var matrix = rows.map(function(r){ return itemIdx.map(function(c){ var v=r[c].trim(); return v===''?NaN:parseInt(v,10); }); });
+  var outcome = rows.map(function(r){ var v=r[outcomeIdx].trim(); return v===''?NaN:parseInt(v,10); });
+  var outcomeObserved = outcomeObsIdx===-1 ? null : rows.map(function(r){ var v=r[outcomeObsIdx].trim(); return v===''?NaN:parseInt(v,10); });
+  var proxy = proxyIdx===-1 ? null : rows.map(function(r){ var v=r[proxyIdx].trim(); return v===''?NaN:parseFloat(v); });
+  var trainMask = trainMaskIdx===-1 ? null : rows.map(function(r){ return r[trainMaskIdx].trim()==='1'; });
+
+  return {itemNames:itemNames, matrix:matrix, groupRaw:groupRaw, groupValues:groupValues, outcome:outcome,
+    outcomeObserved:outcomeObserved, proxy:proxy, trainMask:trainMask, nRows:rows.length, skippedRows:parsed.skipped,
+    hasProxy: proxyIdx!==-1, hasTrainMask: trainMaskIdx!==-1};
+}
+
+function wirePipelineTab() {
+  var el = function(id){ return document.getElementById(id); };
+  el('pl_btnTemplate').addEventListener('click', function(){ downloadText('difair_pipeline_template.csv', TEMPLATE_PIPELINE); });
+  el('pl_btnDemo').addEventListener('click', function(){ loadPipeline(buildDemoPipelineCSV(), T('demo_pipeline_label')); });
+
+  var dz = el('pl_dropzone'), fi = el('pl_fileInput');
+  dz.addEventListener('click', function(e){ if (e.target!==fi) fi.click(); });
+  dz.addEventListener('dragover', function(e){ e.preventDefault(); dz.classList.add('drag'); });
+  dz.addEventListener('dragleave', function(){ dz.classList.remove('drag'); });
+  dz.addEventListener('drop', function(e){ e.preventDefault(); dz.classList.remove('drag'); var f=e.dataTransfer.files&&e.dataTransfer.files[0]; if(f) readFileL(f); });
+  fi.addEventListener('change', function(){ var f=fi.files&&fi.files[0]; if(f) readFileL(f); });
+
+  function readFileL(file) {
+    var reader = new FileReader();
+    reader.onload = function(){ loadPipeline(String(reader.result), file.name); };
+    reader.onerror = function(){ showErrorL({message:T('err_read_fail')}); };
+    reader.readAsText(file, 'UTF-8');
+  }
+  function showErrorL(err) {
+    el('pl_parseError').innerHTML = '<div class="error-box reveal"><span class="err-title">'+T('err_title')+'</span>'+escapeHtml(err.message)+'</div>';
+    el('pl_step2').classList.add('hidden'); el('pl_step3').classList.add('hidden');
+  }
+
+  function loadPipeline(text, sourceLabel) {
+    el('pl_parseError').innerHTML = '';
+    var parsed;
+    try { parsed = parsePipelineCSV(text); }
+    catch (err) { showErrorL(err.message?err:{message:T('err_unrecognized')}); return; }
+    stateL.itemNames=parsed.itemNames; stateL.matrix=parsed.matrix; stateL.groupRaw=parsed.groupRaw; stateL.groupValues=parsed.groupValues;
+    stateL.outcome=parsed.outcome; stateL.outcomeObserved=parsed.outcomeObserved; stateL.proxy=parsed.proxy; stateL.trainMask=parsed.trainMask;
+
+    el('pl_fileStatus').innerHTML = '<span style="color:var(--a-ok);">'+T('loaded_label')+'</span> '+escapeHtml(sourceLabel)+
+      ' \u2014 '+parsed.nRows+' '+T('respondents_label')+' \u00b7 '+parsed.itemNames.length+' '+T('items_label')+
+      (parsed.skippedRows ? T('skipped_rows',{n:parsed.skippedRows}) : '');
+    el('pl_detectedBox').innerHTML = '<b>'+T('group_col_label')+'</b> group &nbsp;\u00b7&nbsp; <b>'+T('two_groups_label')+'</b> "'+
+      escapeHtml(parsed.groupValues[0])+'" / "'+escapeHtml(parsed.groupValues[1])+'"' +
+      ' &nbsp;\u00b7&nbsp; proxy: '+(parsed.hasProxy?'\u2713':'\u2014')+' &nbsp;\u00b7&nbsp; train_mask: '+(parsed.hasTrainMask?'\u2713':'\u2014');
+
+    el('pl_focalSelect').innerHTML = '<option value="">'+T('opt_select')+'</option>'+
+      parsed.groupValues.map(function(g){return '<option value="'+escapeHtml(g)+'">'+escapeHtml(g)+'</option>';}).join('');
+
+    el('pl_s_sampling').disabled = !parsed.hasTrainMask; el('pl_s_sampling').checked = false;
+    el('pl_s_model').disabled = !parsed.hasProxy; el('pl_s_model').checked = false;
+
+    el('pl_btnRun').disabled = true;
+    el('pl_step2').classList.remove('hidden'); el('pl_step2').classList.add('reveal');
+    el('pl_step3').classList.add('hidden');
+  }
+
+  el('pl_focalSelect').addEventListener('change', function(){ el('pl_btnRun').disabled = !el('pl_focalSelect').value; });
+
+  el('pl_btnRun').addEventListener('click', function(){
+    var focalLabel = el('pl_focalSelect').value;
+    if (!focalLabel) return;
+    var isFocal = stateL.groupRaw.map(function(g){return g===focalLabel;});
+    var itemNames = stateL.itemNames, matrix = stateL.matrix;
+
+    // auto-run MH + purification to get DIF-flagged items for the "item" mitigation
+    var pu = purifyDichotomous(matrix, isFocal, itemNames, 5, 0.05);
+    var difItems = [];
+    for (var j=0;j<itemNames.length;j++) {
+      var col = matrix.map(function(row){return row[j];});
+      var mh = computeMH(col, isFocal, pu.matching);
+      var cls = etsClassMH(mh.delta_mh, mh.p_value, 0.05);
+      if (cls==='B'||cls==='C') difItems.push(itemNames[j]);
+    }
+
+    var stages = [];
+    if (el('pl_s_item').checked) stages.push('item');
+    if (el('pl_s_sampling').checked && stateL.trainMask) stages.push('sampling');
+    if (el('pl_s_model').checked && stateL.proxy) stages.push('model');
+    if (stages.length===0) stages = ['item'];
+
+    var metric = el('pl_metricSelect').value;
+    var rate = parseFloat(el('pl_rateInput').value) || 0.4;
+    var trainOutcome = stateL.outcomeObserved || stateL.outcome;
+
+    el('pl_resultsBody').innerHTML = '<tr><td colspan="3" style="text-align:center;padding:20px;">\u2026</td></tr>';
+
+    setTimeout(function(){
+      var res = attributeStages(matrix, itemNames, stateL.groupRaw, focalLabel, stateL.outcome, difItems,
+        stateL.proxy, stateL.trainMask, trainOutcome, stages, metric, rate, 1.0);
+
+      var explained = res.baseline_gap - res.residual_gap;
+      el('pl_kv').innerHTML = [
+        [T('baseline_gap_label'), fmtNum(res.baseline_gap,4)],
+        [T('residual_gap_label'), fmtNum(res.residual_gap,4)],
+        [T('explained_label'), fmtNum(explained,4)],
+      ].map(function(p){ return '<div class="kv-card"><div class="kv-label">'+p[0]+'</div><div class="kv-value">'+p[1]+'</div></div>'; }).join('');
+
+      var shapleyRows = Object.keys(res.shapley).map(function(s){ return {stage:s, value:res.shapley[s]}; });
+      shapleyRows.sort(function(a,b){ return b.value-a.value; });
+      el('pl_resultsBody').innerHTML = shapleyRows.map(function(r){
+        var share = Math.abs(explained) > 0.02 ? (r.value/explained) : NaN;
+        return '<tr><td class="item-name">'+r.stage+'</td><td class="num">'+fmtNum(r.value,4)+'</td><td class="num">'+(isNaN(share)?'\u2014':fmtNum(share*100,1)+'%')+'</td></tr>';
+      }).join('');
+
+      stateL.lastResults = {shapley: shapleyRows, baseline: res.baseline_gap, residual: res.residual_gap, explained: explained, difItems: difItems};
+      el('pl_step3').classList.remove('hidden'); el('pl_step3').classList.add('reveal');
+    }, 30);
+  });
+
+  el('pl_btnDownloadResults').addEventListener('click', function(){
+    if (!stateL.lastResults) return;
+    var lr = stateL.lastResults;
+    var lines = ['stage,shapley_value'];
+    lr.shapley.forEach(function(r){ lines.push([r.stage, r.value.toFixed(6)].join(',')); });
+    lines.push('');
+    lines.push('baseline_gap,'+lr.baseline.toFixed(6));
+    lines.push('residual_gap,'+lr.residual.toFixed(6));
+    lines.push('dif_items_flagged,"'+lr.difItems.join('; ')+'"');
+    downloadText('difair_pipeline_results.csv', lines.join('\n'));
+  });
+}
+/* ================= Tab nav + language toggle + init ================= */
+function wireTabNav() {
+  var buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      buttons.forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.tabpanel').forEach(function(p){ p.classList.remove('active'); });
+      document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+    });
+  });
+}
+
+function onLanguageChanged() {
+  // Re-render any already-computed dynamic content that isn't behind data-i18n
+  // (kept minimal: static labels handled by applyLanguage; result tables use
+  // English metric/column keys deliberately, matching the underlying package's
+  // column names, so no re-render is required here.)
+}
+
+window.addEventListener('DOMContentLoaded', function () {
+  'use strict';
+  wireTabNav();
+  wireDichotomousTab();
+  wirePolyTab();
+  wireFairTab();
+  wireSurveyTab();
+  wirePipelineTab();
+  applyLanguage('en');
+});
+
+</script>
+</body>
+</html>

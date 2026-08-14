@@ -1,0 +1,4 @@
+dif_magnitude,type1_raw,type1_purified,power_raw,power_purified,n_replications
+0.5,0.0425,0.0125,0.645,0.74,50
+0.75,0.095,0.01,0.93,0.97,50
+1.0,0.17125,0.00875,0.99,0.995,50

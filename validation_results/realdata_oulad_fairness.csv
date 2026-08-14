@@ -1,0 +1,5 @@
+metric,value
+demographic_parity,0.11084599976434545
+equalized_odds,0.0008385744234800097
+equal_opportunity,-0.0008385744234800097
+predictive_parity,0.0

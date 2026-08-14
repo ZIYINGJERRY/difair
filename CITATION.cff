@@ -1,0 +1,56 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite both the software and the paper below."
+title: "DIFair: unified differential item functioning and algorithmic fairness auditing for educational data"
+abstract: >-
+  DIFair unifies differential item functioning (DIF) procedures from
+  educational measurement with algorithmic fairness metrics from machine
+  learning in a single Python API, and attributes a group disparity in a
+  system's decisions to the pipeline stage that produced it by exact Shapley
+  decomposition. It covers dichotomous and ordered categorical items,
+  replicate-weight variance and plausible-value combination for large-scale
+  assessments, and ships a zero-install browser front end.
+type: software
+version: "0.7.0"
+date-released: "2026-08-12"
+license: MIT
+repository-code: "https://github.com/ZIYINGJERRY/difair"
+url: "https://github.com/ZIYINGJERRY/difair"
+# doi: "10.5281/zenodo.XXXXXXX"        # fill in once the Zenodo release is minted
+keywords:
+  - differential item functioning
+  - psychometrics
+  - algorithmic fairness
+  - educational measurement
+  - learning analytics
+  - item response theory
+  - Python
+authors:
+  - family-names: "Guo"
+    given-names: "Ziying"
+    affiliation: "Beijing University of Technology, Beijing, China"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"
+  - family-names: "Li"
+    given-names: "Yan"
+    affiliation: "Beijing Vocational College of Finance and Commerce, Beijing, China"
+    # orcid: "https://orcid.org/0000-0000-0000-0000"
+contact:
+  - family-names: "Li"
+    given-names: "Yan"
+    affiliation: "Beijing Vocational College of Finance and Commerce, Beijing, China"
+    # email: ""                          # optional
+
+preferred-citation:
+  type: article
+  title: "DIFair: A Python library unifying differential item functioning and algorithmic fairness auditing for educational data"
+  journal: "SoftwareX"
+  year: 2026
+  # volume: 00
+  # start: "000000"                     # SoftwareX uses article numbers
+  # doi: "10.1016/j.softx.2026.XXXXXX"
+  authors:
+    - family-names: "Guo"
+      given-names: "Ziying"
+      affiliation: "Beijing University of Technology, Beijing, China"
+    - family-names: "Li"
+      given-names: "Yan"
+      affiliation: "Beijing Vocational College of Finance and Commerce, Beijing, China"

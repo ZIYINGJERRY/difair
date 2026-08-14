@@ -1,0 +1,8 @@
+{
+  "elapsed_seconds": 120.5,
+  "quick_mode": false,
+  "n_items": 20,
+  "n_dif_items": 4,
+  "numpy": "2.4.4",
+  "pandas": "3.0.2"
+}

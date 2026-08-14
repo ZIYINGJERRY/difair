@@ -1,0 +1,6 @@
+file,n_students,n_zones,students_per_zone,zero_fraction,inferred,correct
+bsachlm7,4115,75,54.9,0.00664,jackknife,True
+bsaengm7,3365,69,48.8,0.00714,jackknife,True
+bsafram7,3874,75,51.7,0.00661,jackknife,True
+bsageom7,3315,74,44.8,0.00697,jackknife,True
+bsaitam7,3619,75,48.3,0.00664,jackknife,True

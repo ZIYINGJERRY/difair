@@ -1,0 +1,4 @@
+planted,rejection_rate_uniform_test,rejection_rate_nonuniform_test,n_replications
+uniform,1.0,0.07916666666666666,60
+nonuniform,0.7916666666666666,0.9875,60
+none,0.05416666666666667,0.07083333333333333,60

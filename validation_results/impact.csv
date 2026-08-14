@@ -1,0 +1,4 @@
+impact,false_flag_rate,n_replications
+0.0,0.0,200
+0.5,0.00025,200
+1.0,0.00325,200
