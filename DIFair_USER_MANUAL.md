@@ -60,9 +60,9 @@ Researchers auditing a modern educational pipeline need both, and currently move
 |  | Intended for | How to run |
 |---|---|---|
 | **`difair_studio.html`** | Anyone; no programming required | Open the file in a browser. No install, no Python, no network calls. |
-| **`difair` Python package** | Python users; research-grade reproducibility | `pip install difair` |
+| **`difair` Python package** | Python users; research-grade reproducibility | `pip install git+https://github.com/ZIYINGJERRY/difair` |
 
-`difair_studio.html` ships alongside the package in the repository and is **not** distributed via PyPI. Use the Python package when you need bit-exact reproducibility with the validated reference implementation, an HTML audit report bundling everything together, or scripted analysis across many files.
+`difair_studio.html` ships alongside the package in the repository rather than inside the installable Python distribution. Use the Python package when you need bit-exact reproducibility with the validated reference implementation, an HTML audit report bundling everything together, or scripted analysis across many files.
 
 ---
 
@@ -111,13 +111,18 @@ Because nothing is uploaded anywhere, the browser tool is safe to use with confi
 
 ## 3. Installation
 
-### 3.1 From PyPI
+### 3.1 From GitHub
+
+DIFair is not on PyPI. Install it directly from the repository:
 
 ```bash
-pip install difair
+pip install git+https://github.com/ZIYINGJERRY/difair
 ```
 
 ### 3.2 From Source
+
+Clone instead if you also want `difair_studio.html`, the examples or the
+validation data, none of which are part of the installable package:
 
 ```bash
 git clone https://github.com/ZIYINGJERRY/difair
@@ -781,11 +786,13 @@ python examples/crossvalidate_difR.py --difr-dir /tmp/difR/R
 
 - **Repository:** https://github.com/ZIYINGJERRY/difair
 - **Issue tracker:** https://github.com/ZIYINGJERRY/difair/issues
+- **Archived release (DOI):** https://doi.org/10.5281/zenodo.21941248
 
 ### 10.2 Version
 
 - **Current version:** 0.7.0
-- **Released:** 2026-08-12
+- **Released:** 2026-08-15
+- **DOI (v0.7.0):** 10.5281/zenodo.21941248
 - **Development status:** Alpha
 - **License:** MIT
 
