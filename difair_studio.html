@@ -218,6 +218,8 @@
   @keyframes revealIn{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:translateY(0);} }
   @media (prefers-reduced-motion: reduce){ .reveal{ animation:none; } .btn, .dropzone{ transition:none; } }
   .visually-hidden{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  footer .credit{margin-top:1.1em;padding-top:.9em;border-top:1px solid var(--stripe);font-size:.85em;opacity:.75;line-height:1.6;}
+  footer .credit a{color:inherit;}
 </style>
 </head>
 <body>
@@ -587,6 +589,13 @@
       <li data-i18n="foot_li2">Being flagged for DIF or a fairness gap statistically doesn't automatically mean "unfair" &mdash; flagged items and gaps need expert content and context review.</li>
       <li data-i18n="foot_li3">All tools here support two-group comparisons only, matching the underlying package. With a small sample (fewer than roughly 50 people), statistical power is limited and results should be treated as indicative only.</li>
     </ul>
+    <p class="credit">
+      <span data-i18n="foot_credit">DIFair Studio &middot; Ziying Guo, Yan Li &middot; MIT License</span><br>
+      <span data-i18n="foot_credit2">Full Python package and source:</span>
+      <a href="https://github.com/ZIYINGJERRY/difair" target="_blank" rel="noopener">github.com/ZIYINGJERRY/difair</a>
+      &middot;
+      <a href="https://doi.org/10.5281/zenodo.21941248" target="_blank" rel="noopener">doi:10.5281/zenodo.21941248</a>
+    </p>
   </footer>
 
 </div>
@@ -2103,7 +2112,9 @@ en: {
   pl_th_stage: "Stage", pl_th_shapley: "Shapley value", pl_th_share: "Share of explained gap",
 
   foot_method: "Method & limitations",
-  foot_li1: "Every procedure here is a from-scratch JavaScript port of the corresponding function in the DIFair Python package, checked against its actual output on test data. Mantel\u2013Haenszel, standardization, Breslow\u2013Day, generalized Mantel\u2013Haenszel, all fairness metrics, and the survey/jackknife functions match to 5+ decimal places. Logistic-regression-based procedures (item-level logistic DIF, ordinal logistic DIF, pipeline attribution) fit their own solver rather than statsmodels/scikit-learn's, so results are very close but not bit-identical, especially for pipeline attribution under sample reweighting.",
+  foot_credit: 'DIFair Studio \u00b7 Ziying Guo, Yan Li \u00b7 MIT License',
+    foot_credit2: 'Full Python package and source:',
+    foot_li1: "Every procedure here is a from-scratch JavaScript port of the corresponding function in the DIFair Python package, checked against its actual output on test data. Mantel\u2013Haenszel, standardization, Breslow\u2013Day, generalized Mantel\u2013Haenszel, all fairness metrics, and the survey/jackknife functions match to 5+ decimal places. Logistic-regression-based procedures (item-level logistic DIF, ordinal logistic DIF, pipeline attribution) fit their own solver rather than statsmodels/scikit-learn's, so results are very close but not bit-identical, especially for pipeline attribution under sample reweighting.",
   foot_li2: "Being flagged for DIF or a fairness gap statistically doesn't automatically mean \"unfair\" \u2014 flagged items and gaps need expert content and context review.",
   foot_li3: "All tools here support two-group comparisons only, matching the underlying package. With a small sample (fewer than roughly 50 people), statistical power is limited and results should be treated as indicative only.",
 
