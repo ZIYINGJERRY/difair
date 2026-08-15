@@ -11,11 +11,11 @@ abstract: >-
   assessments, and ships a zero-install browser front end.
 type: software
 version: "0.7.0"
-date-released: "2026-08-12"
+date-released: "2026-08-15"
 license: MIT
 repository-code: "https://github.com/ZIYINGJERRY/difair"
 url: "https://github.com/ZIYINGJERRY/difair"
-# doi: "10.5281/zenodo.XXXXXXX"        # fill in once the Zenodo release is minted
+doi: "10.5281/zenodo.21941248"
 keywords:
   - differential item functioning
   - psychometrics

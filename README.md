@@ -5,6 +5,7 @@ for educational data.
 
 [![CI](https://github.com/ZIYINGJERRY/difair/actions/workflows/ci.yml/badge.svg)](https://github.com/ZIYINGJERRY/difair/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21941248.svg)](https://doi.org/10.5281/zenodo.21941248)
 
 ## Why
 
@@ -368,6 +369,10 @@ pytest tests/ -q --cov=difair
 
 If you use DIFair in published work, please cite the accompanying software
 paper (see `CITATION.cff`).
+
+Each release is archived on Zenodo. To cite the exact version you ran, use its
+version DOI; v0.7.0 is
+[10.5281/zenodo.21941248](https://doi.org/10.5281/zenodo.21941248).
 
 ## License
 
